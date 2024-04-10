@@ -13,7 +13,7 @@ const router = Router();
 
 router.post("/sso", ssoCallback);
 router.get("/refresh", refresh);
-router.delete("/logout", verifyJwt, logout);
+router.delete("/logout", logout);
 
 // self profile
 router.get("/profile", verifyJwt, profile);

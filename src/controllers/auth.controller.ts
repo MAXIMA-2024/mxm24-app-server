@@ -396,7 +396,6 @@ export const refresh = async (req: Request, res: Response) => {
   }
 };
 
-// di guard middleware checkJwt
 export const logout = (_req: Request, res: Response) => {
   res.clearCookie("jwt");
   res.clearCookie("jwt_refresh");
