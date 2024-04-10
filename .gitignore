@@ -176,3 +176,6 @@ dist
 
 # logs
 logs.txt
+
+# ignore public content
+public

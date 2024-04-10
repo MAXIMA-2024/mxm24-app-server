@@ -9,7 +9,7 @@ type LogLevel = "INFO" | "WARN" | "DEBUG" | "ERROR";
  * @param message - The log message to be printed.
  * @param err - Optional error object to be printed along with the log message.
  */
-const print = (level: LogLevel, message: string, err?: Error) => {
+const print = (level: LogLevel, message: string, err?: unknown) => {
   const now = new Date().toISOString();
   if (level === "INFO") {
     console.log(`${now} - [INFO]: ${message}`);
@@ -25,7 +25,7 @@ const print = (level: LogLevel, message: string, err?: Error) => {
 
   if (level === "ERROR") {
     console.error(`${now} - [ERROR]: ${message}`);
-    console.error(err);
+    if (err) console.error(err);
   }
 };
 
@@ -36,7 +36,7 @@ const print = (level: LogLevel, message: string, err?: Error) => {
  * @param message - The log message.
  * @param err - An optional error object.
  */
-const logging = (level: LogLevel, message: string, err?: Error) => {
+const logging = (level: LogLevel, message: string, err?: unknown) => {
   if (ENV.NODE_ENV === "development" && level === "DEBUG") {
     print(level, message, err);
     return;
