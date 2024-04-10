@@ -12,9 +12,27 @@ import authRoute from "@/routes/auth.route";
 
 const app = Express();
 
+// [CORS]
+const allowedOrigins = [
+  "https://internal.maximaumn.com",
+  "https://maximaumn.com",
+  "https://maxima.umn.ac.id",
+];
+
 // [Global Middlewares]
 app.use(cookieParser());
-app.use(cors());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // Allow credentials to be sent with requests
+  })
+);
 app.use(Express.json());
 
 // [Routes]
