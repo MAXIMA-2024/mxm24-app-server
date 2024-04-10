@@ -84,14 +84,14 @@ export const ssoCallback = async (
       res.cookie("jwt", jwtToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
       res.cookie("jwt_refresh", jwtRefreshToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
 
@@ -133,14 +133,14 @@ export const ssoCallback = async (
       res.cookie("jwt", jwtToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
       res.cookie("jwt_refresh", jwtRefreshToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
 
@@ -182,14 +182,14 @@ export const ssoCallback = async (
       res.cookie("jwt", jwtToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
       res.cookie("jwt_refresh", jwtRefreshToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
 
@@ -226,14 +226,14 @@ export const ssoCallback = async (
     res.cookie("jwt", jwtToken, {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "none",
       expires: new Date(Date.now() + 15 * 60 * 1000),
     });
 
     res.cookie("jwt_refresh", jwtRefreshToken, {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "none",
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
@@ -291,7 +291,7 @@ export const refresh = async (req: Request, res: Response) => {
       res.cookie("jwt", jwtToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -323,7 +323,7 @@ export const refresh = async (req: Request, res: Response) => {
       res.cookie("jwt", jwtToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -355,7 +355,7 @@ export const refresh = async (req: Request, res: Response) => {
       res.cookie("jwt", jwtToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -381,7 +381,7 @@ export const refresh = async (req: Request, res: Response) => {
     res.cookie("jwt", jwtToken, {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "none",
       expires: new Date(Date.now() + 15 * 60 * 1000),
     });
 
