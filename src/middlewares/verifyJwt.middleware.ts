@@ -59,6 +59,7 @@ const verifyJwt = async (req: Request, res: Response, next: NextFunction) => {
         nim: true,
         name: true,
         stateId: true,
+        isVerified: true,
       },
     });
     if (organisator) {
@@ -77,6 +78,7 @@ const verifyJwt = async (req: Request, res: Response, next: NextFunction) => {
         name: true,
         nim: true,
         divisiId: true,
+        isVerified: true,
       },
     });
     if (panitia) {

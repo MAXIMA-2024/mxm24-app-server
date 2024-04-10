@@ -32,6 +32,7 @@ export const panitiaUpdatableSchema = panitiaSchema.pick({
   name: true,
   nim: true,
   divisiId: true,
+  isVerified: true,
 });
 
 export type Panitia = z.infer<typeof panitiaSchema>;
