@@ -22,7 +22,7 @@ import type { JWTModel } from "@/models/auth/jwt.model";
 const verifyJwt = async (req: Request, res: Response, next: NextFunction) => {
   const jwtToken = req.cookies.jwt as string | undefined;
   if (!jwtToken) {
-    return unauthorized(res, "No JWT provided");
+    return unauthorized(res, "Invalid session");
   }
 
   try {
