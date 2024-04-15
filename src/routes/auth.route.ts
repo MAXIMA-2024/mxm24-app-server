@@ -5,6 +5,7 @@ import {
   refresh,
   logout,
   profile,
+  onboarding,
 } from "@/controllers/auth.controller";
 
 import verifyJwt from "@/middlewares/verifyJwt.middleware";
@@ -19,6 +20,6 @@ router.delete("/logout", logout);
 router.get("/profile", verifyJwt, profile);
 
 // onboarding
-// !todo: kerjain onboarding
+router.post("/onboarding", verifyJwt, onboarding);
 
 export default router;
