@@ -7,8 +7,6 @@ export const divisiPanitiaSchema = z.object({
     .string({ required_error: "Name cannot be empty" })
     .min(3, "Name must be at least 3 characters")
     .max(100, "Name must be at most 100 characters"),
-  createdAt: z.date(),
-  updatedAt: z.date(),
 });
 
 export type DivisiPanitia = z.infer<typeof divisiPanitiaSchema>;

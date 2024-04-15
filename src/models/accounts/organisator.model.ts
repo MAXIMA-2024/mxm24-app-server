@@ -32,6 +32,7 @@ const organisatorSchema = z.object({
 export const organisatorUpdatableSchema = organisatorSchema.pick({
   name: true,
   nim: true,
+  email: true,
   stateId: true,
   isVerified: true,
 });

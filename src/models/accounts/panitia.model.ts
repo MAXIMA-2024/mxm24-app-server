@@ -31,6 +31,7 @@ export const panitiaSchema = z.object({
 export const panitiaUpdatableSchema = panitiaSchema.pick({
   name: true,
   nim: true,
+  email: true,
   divisiId: true,
   isVerified: true,
 });
