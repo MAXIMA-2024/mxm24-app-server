@@ -134,3 +134,9 @@ model Mahasiswa {
 }
 
 // !TODO: model akun external
+
+model Logs {
+  id        Int      @id @default(autoincrement())
+  action    String
+  timestamp DateTime @default(now())
+}
