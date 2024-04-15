@@ -1,6 +1,7 @@
 import ENV from "@/utils/env";
+import db from "@/services/db";
 
-type LogLevel = "INFO" | "WARN" | "DEBUG" | "ERROR";
+type LogLevel = "LOGS" | "INFO" | "WARN" | "DEBUG" | "ERROR";
 
 /**
  * Prints log messages to the console based on the specified log level.
@@ -40,6 +41,18 @@ const logging = (level: LogLevel, message: string, err?: unknown) => {
   if (ENV.NODE_ENV === "development" && level === "DEBUG") {
     print(level, message, err);
     return;
+  }
+
+  if (level === "LOGS") {
+    db.logs
+      .create({
+        data: {
+          action: message,
+        },
+      })
+      .catch((err) => {
+        print("ERROR", "Failed to log to database", err);
+      });
   }
 
   print(level, message, err);
