@@ -7,9 +7,9 @@ import type { Request, Response, NextFunction } from "express";
  * @returns The middleware function that verifies the role of the user.
  */
 const verifyRole =
-  (role: "panitia" | "organisator" | "mahasiswa" | "unknown") =>
+  (role: ("panitia" | "organisator" | "mahasiswa" | "unknown")[]) =>
   async (req: Request, res: Response, next: NextFunction) => {
-    if (req.user?.role !== role) {
+    if (!role.includes(req.user?.role!)) {
       return forbidden(res, `${role} don't have access to this feature`);
     }
 
