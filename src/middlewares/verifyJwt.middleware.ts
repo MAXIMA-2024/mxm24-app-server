@@ -1,7 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-import logging from "@/utils/logging";
 import { unauthorized } from "@/utils/responses";
 
 import db from "@/services/db";
@@ -59,6 +58,7 @@ const verifyJwt = async (req: Request, res: Response, next: NextFunction) => {
         nim: true,
         name: true,
         stateId: true,
+        email: true,
         isVerified: true,
       },
     });
@@ -77,6 +77,7 @@ const verifyJwt = async (req: Request, res: Response, next: NextFunction) => {
       select: {
         name: true,
         nim: true,
+        email: true,
         divisiId: true,
         isVerified: true,
       },
