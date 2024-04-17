@@ -36,5 +36,10 @@ export const panitiaUpdatableSchema = panitiaSchema.pick({
   isVerified: true,
 });
 
+export const panitiaIdSchema = z.object({
+  id: z.preprocess((v) => parseInt(v as string), z.number())
+});
+
 export type Panitia = z.infer<typeof panitiaSchema>;
 export type PanitiaUpdatable = z.infer<typeof panitiaUpdatableSchema>;
+export type PanitiaId = z.infer<typeof panitiaIdSchema>;
