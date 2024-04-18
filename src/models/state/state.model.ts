@@ -20,6 +20,10 @@ export const stateSchema = z.object({
   updatedAt: z.date(),
 });
 
+export const stateIdSchema = z.object({
+  id: z.preprocess((v) => parseInt(v as string), z.number()),
+});
+
 export const stateUpdatableSchema = stateSchema.pick({
   name: true,
   dayId: true,
