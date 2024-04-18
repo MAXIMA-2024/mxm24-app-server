@@ -14,7 +14,7 @@ import {
 const router = Router();
 
 router.get("/", verifyJwt, verifyRole(["panitia"]), getAllOrganisator);
-router.get("/:id", verifyJwt, getOrganisator);
+router.get("/:id", verifyJwt, verifyRole(["panitia"]), getOrganisator);
 router.put("/:id", verifyJwt, verifyRole(["panitia"]), verifyDivisiPanitia([1,2]), updateOrganisator );
 router.delete("/:id", verifyJwt, verifyRole(["panitia"]), verifyDivisiPanitia([1,2]), deleteOrganisator);
 
