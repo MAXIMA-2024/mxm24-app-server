@@ -10,6 +10,7 @@ import { notFound } from "@/utils/responses";
 import indexRoute from "@/routes/index.route";
 import authRoute from "@/routes/auth.route";
 import toggleRoute from "@/routes/toggle.route";
+import verifikasiRoute from "@/routes/verifikasi.route";
 
 const app = Express();
 
@@ -40,6 +41,7 @@ app.use(Express.json());
 app.use(indexRoute);
 app.use("/auth", authRoute);
 app.use(toggleRoute);
+app.use(verifikasiRoute);
 
 // [Global 404]
 app.all("*", (_req: Request, res: Response) => {
