@@ -9,8 +9,8 @@ import {
 
 export const getAllPanitia = async (req: Request, res: Response) => {
     try {
-        const barang = await db.panitia.findMany();
-        return success(res, "Berhasil mendapatkan data panitia", barang);
+        const panitia = await db.panitia.findMany();
+        return success(res, "Berhasil mendapatkan data panitia", panitia);
     } catch (err) {
         return internalServerError(res);
     }
@@ -35,29 +35,6 @@ export const getPanitia = async (req: Request, res: Response) => {
     }
 }
 
-export const addPanitia = async (req: Request<{}, {}, PanitiaUpdatable>, res: Response) => {
-    try {
-        const validate = await panitiaUpdatableSchema.safeParseAsync(req.body);
-        if (!validate.success) {
-            return validationError(res, parseZodError(validate.error));
-        }
-
-        const isExists = await db.panitia.findFirst({
-            where: {email: validate.data.email},
-        })
-
-        if (isExists) {
-            return conflict(res, "Email sudah terdaftar");
-        }
-
-        const panitia = await db.panitia.create({
-            data: validate.data,
-        })
-        return created(res, "Berhasil menambahkan data panitia", panitia);
-    } catch (err) {
-        return internalServerError(res);
-    }    
-}
 
 export const updatePanitia = async (req: Request<{}, {}, PanitiaUpdatable>, res: Response) => {
     try {
