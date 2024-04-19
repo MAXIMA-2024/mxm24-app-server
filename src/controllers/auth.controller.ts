@@ -467,6 +467,25 @@ export const onboarding = async (
         },
       });
 
+      const jwtToken = jwt.sign(
+        {
+          email: newMahasiswa.email,
+          role: "mahasiswa",
+          ticket: req.jwt?.ticket!,
+        } as JWTModel,
+        ENV.APP_JWT_SECRET,
+        {
+          expiresIn: "15m",
+        }
+      );
+
+      res.cookie("jwt", jwtToken, {
+        httpOnly: true,
+        secure: ENV.NODE_ENV === "production",
+        sameSite: "none",
+        expires: new Date(Date.now() + 15 * 60 * 1000),
+      });
+
       return success(
         res,
         "Mahasiswa account created successfully",
@@ -495,6 +514,25 @@ export const onboarding = async (
         },
       });
 
+      const jwtToken = jwt.sign(
+        {
+          email: newOrganisator.email,
+          role: "organisator",
+          ticket: req.jwt?.ticket!,
+        } as JWTModel,
+        ENV.APP_JWT_SECRET,
+        {
+          expiresIn: "15m",
+        }
+      );
+
+      res.cookie("jwt", jwtToken, {
+        httpOnly: true,
+        secure: ENV.NODE_ENV === "production",
+        sameSite: "none",
+        expires: new Date(Date.now() + 15 * 60 * 1000),
+      });
+
       return success(
         res,
         "Organisator account created successfully",
@@ -521,6 +559,25 @@ export const onboarding = async (
           },
           divisiId: undefined,
         },
+      });
+
+      const jwtToken = jwt.sign(
+        {
+          email: newPanitia.email,
+          role: "panitia",
+          ticket: req.jwt?.ticket!,
+        } as JWTModel,
+        ENV.APP_JWT_SECRET,
+        {
+          expiresIn: "15m",
+        }
+      );
+
+      res.cookie("jwt", jwtToken, {
+        httpOnly: true,
+        secure: ENV.NODE_ENV === "production",
+        sameSite: "none",
+        expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
       return success(res, "Panitia account created successfully", newPanitia);
