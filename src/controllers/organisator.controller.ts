@@ -7,13 +7,19 @@ import {
     type OrganisatorUpdatable,
     organisatorIdSchema,
 } from "@/models/accounts/organisator.model";
+import logging from "@/utils/logging";
 
 
 export const getAllOrganisator = async (req: Request, res: Response) => {
     try {
-        const organisator = await db.organisator.findMany();
+        const organisator = await db.organisator.findMany({
+            include: {state: {
+                select: {id: true, name: true}
+            }}
+        });
         return success(res, "Berhasil mendapatkan data organisator", organisator);
     } catch (err) {
+        logging("ERROR", "Error when trying to get all organisator data", err);
         return internalServerError(res);
     }
 }
@@ -27,6 +33,9 @@ export const getOrganisator = async (req: Request, res: Response) => {
 
         const organisator = await db.organisator.findUnique({
             where: {id: validate.data.id},
+            include: {state: {
+                select: {id: true, name: true}
+            }}
         })
         if (!organisator) {
             return notFound(res, `Data organisator dengan id ${validate.data.id} tidak ditemukan`);
@@ -34,6 +43,7 @@ export const getOrganisator = async (req: Request, res: Response) => {
         
         return success(res, "Berhasil mendapatkan data organisator", organisator);
     } catch (err) {
+        logging("ERROR", "Error when trying to get organisator data", err);
         return internalServerError(res);
     }
 }
@@ -64,6 +74,7 @@ export const updateOrganisator = async (req: Request<{}, {}, OrganisatorUpdatabl
 
         return success(res, "Berhasil mengupdate data organisator", organisator);
     } catch (err) {
+        logging("ERROR", "Error when trying to update organisator data", err);
         return internalServerError(res);
     }
 }
@@ -88,6 +99,7 @@ export const deleteOrganisator = async (req: Request, res: Response) => {
         
         return success(res, `Data organisator dengan id ${validate.data.id} berhasil terhapus`);
     } catch (err) {
+        logging("ERROR", "Error when trying to delete organisator data", err);
         return internalServerError(res);
     }
     

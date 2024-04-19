@@ -6,13 +6,18 @@ import {
     panitiaUpdatableSchema,
     type PanitiaUpdatable, 
 } from "@/models/accounts/panitia.model";
+import logging from "@/utils/logging";
 
 export const getAllPanitia = async (req: Request, res: Response) => {
     try {
-        const panitia = await db.panitia.findMany();
+        const panitia = await db.panitia.findMany({
+            include: {divisi: true}
+        });
         return success(res, "Berhasil mendapatkan data panitia", panitia);
     } catch (err) {
+        logging("ERROR", "Error when trying to fetch all panitia data", err);
         return internalServerError(res);
+        
     }
 }
 
@@ -25,12 +30,14 @@ export const getPanitia = async (req: Request, res: Response) => {
 
         const panitia = await db.panitia.findUnique({
             where: {id: validate.data.id},
+            include: {divisi: true}
         })
         if (!panitia) {
             return notFound(res, `Data panitia dengan id ${validate.data.id} tidak ditemukan`);
         }
         return success(res, "Berhasil mendapatkan data panitia", panitia);
     } catch (err) {
+        logging("ERROR", "Error when trying to fetch panitia data", err);
         return internalServerError(res);
     }
 }
@@ -61,6 +68,7 @@ export const updatePanitia = async (req: Request<{}, {}, PanitiaUpdatable>, res:
 
         return success(res, "Berhasil mengupdate data panitia", panitia);
     } catch (err) {
+        logging("ERROR", "Error when trying to update panitia data", err);
         return internalServerError(res);
     }
 }
@@ -85,6 +93,7 @@ export const deletePanitia = async (req: Request, res: Response) => {
         
         return success(res, `Data panitia dengan id ${validate.data.id} berhasil terhapus`);
     } catch (err) {
+        logging("ERROR", "Error when trying to delete panitia data", err);
         return internalServerError(res);
     }
     
@@ -95,6 +104,7 @@ export const enumDivisiPanitia = async (req: Request, res: Response) => {
         const divisi = await db.divisiPanitia.findMany();
         return success(res, "Berhasil mendapatkan data divisi panitia", divisi);
     } catch (err) {
+        logging("ERROR", "Error when trying to get divisi panitia enum data", err);
         return internalServerError(res);
     }
 }
