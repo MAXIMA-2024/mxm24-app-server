@@ -74,7 +74,7 @@ export const ssoCallback = async (
           email: mahasiswa.email,
           ticket: sso.data.ticket,
         },
-        ENV.APP_JWT_SECRET,
+        ENV.APP_JWT_REFRESH_SECRET,
         {
           expiresIn: "7d",
         }
@@ -123,7 +123,7 @@ export const ssoCallback = async (
           email: organisator.email,
           ticket: sso.data.ticket,
         },
-        ENV.APP_JWT_SECRET,
+        ENV.APP_JWT_REFRESH_SECRET,
         {
           expiresIn: "7d",
         }
@@ -172,7 +172,7 @@ export const ssoCallback = async (
           email: panitia.email,
           ticket: sso.data.ticket,
         },
-        ENV.APP_JWT_SECRET,
+        ENV.APP_JWT_REFRESH_SECRET,
         {
           expiresIn: "7d",
         }
