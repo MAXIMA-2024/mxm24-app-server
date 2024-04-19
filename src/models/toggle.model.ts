@@ -10,9 +10,4 @@ export const toggleSchema = z.object({
   toggle: z.boolean(),
 });
 
-export const idToggleSchema = z.object({
-  id: z.preprocess((val) => parseInt(val as string), z.number()),
-});
-
-export type idToggle = z.infer<typeof idToggleSchema>;
 export type Toggle = z.infer<typeof toggleSchema>;

@@ -10,7 +10,6 @@ import {
 } from "@/utils/responses";
 import { idSchema, type Id } from "@/models/id.model";
 import { toggleSchema, type Toggle } from "@/models/toggle.model";
-import { idToggleSchema, type idToggle } from "@/models/toggle.model";
 
 // get all toggles
 export const allToggles = async (req: Request, res: Response) => {
@@ -24,7 +23,7 @@ export const allToggles = async (req: Request, res: Response) => {
 };
 
 // get toggles by id
-export const togglebyId = async (req: Request<{ id: Id }>, res: Response) => {
+export const togglebyId = async (req: Request, res: Response) => {
   try {
     const validateId = await idSchema.safeParseAsync(req.params.id);
     if (!validateId.success) {
@@ -57,16 +56,21 @@ export const togglebyId = async (req: Request<{ id: Id }>, res: Response) => {
 };
 
 //create toggle
-export const createToggle = async (req: Request, res: Response) => {
+export const createToggle = async (
+  req: Request<{}, {}, Pick<Toggle, "name">>,
+  res: Response
+) => {
   try {
-    const validateToggle = await toggleSchema.safeParseAsync(req.body);
+    const validateToggle = await toggleSchema
+      .pick({ name: true })
+      .safeParseAsync(req.body);
     if (!validateToggle.success) {
       return validationError(res, parseZodError(validateToggle.error));
     }
-    const { name } = req.body;
+
     const newToggle = await db.toggle.create({
       data: {
-        name,
+        name: validateToggle.data.name,
         toggle: false,
       },
     });
@@ -79,14 +83,14 @@ export const createToggle = async (req: Request, res: Response) => {
 
 export const toggleToggle = async (req: Request, res: Response) => {
   try {
-    const validateId = await idToggleSchema.safeParseAsync(req.params);
+    const validateId = await idSchema.safeParseAsync(req.params.id);
     if (!validateId.success) {
       return validationError(res, parseZodError(validateId.error));
     }
 
     const toggle = await db.toggle.findUnique({
       where: {
-        id: validateId.data.id,
+        id: validateId.data,
       },
     });
 
@@ -97,7 +101,7 @@ export const toggleToggle = async (req: Request, res: Response) => {
 
     const updatedToggle = await db.toggle.update({
       where: {
-        id: validateId.data.id,
+        id: validateId.data,
       },
       data: {
         toggle: !toggle.toggle,
@@ -120,13 +124,13 @@ export const toggleToggle = async (req: Request, res: Response) => {
 //delete toggle
 export const deleteToggle = async (req: Request, res: Response) => {
   try {
-    const validateId = await idToggleSchema.safeParseAsync(req.params);
+    const validateId = await idSchema.safeParseAsync(req.params.id);
     if (!validateId.success) {
       return validationError(res, parseZodError(validateId.error));
     }
     const toggle = await db.toggle.delete({
       where: {
-        id: validateId.data.id,
+        id: validateId.data,
       },
     });
 
