@@ -5,7 +5,6 @@ import db from "@/services/db";
 import {
     organisatorUpdatableSchema,
     type OrganisatorUpdatable,
-    organisatorIdSchema,
 } from "@/models/accounts/organisator.model";
 import logging from "@/utils/logging";
 import { idSchema, type Id } from "@/models/id.model";

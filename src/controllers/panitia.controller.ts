@@ -2,7 +2,6 @@ import type { Request, Response } from "express";
 import { conflict, created, internalServerError, notFound, parseZodError, success, validationError } from "@/utils/responses";
 import db from "@/services/db";
 import { 
-    panitiaIdSchema,
     panitiaUpdatableSchema,
     type PanitiaUpdatable, 
 } from "@/models/accounts/panitia.model";

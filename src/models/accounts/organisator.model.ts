@@ -37,10 +37,6 @@ export const organisatorUpdatableSchema = organisatorSchema.pick({
   isVerified: true,
 });
 
-export const organisatorIdSchema = z.object({
-  id: z.preprocess((v) => parseInt(v as string), z.number())
-});
 
 export type Organisator = z.infer<typeof organisatorSchema>;
 export type OrganisatorUpdatable = z.infer<typeof organisatorUpdatableSchema>;
-export type OrganisatorId = z.infer<typeof organisatorIdSchema>;
