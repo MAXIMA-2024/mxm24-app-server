@@ -7,6 +7,7 @@ import {
     type PanitiaUpdatable, 
 } from "@/models/accounts/panitia.model";
 import logging from "@/utils/logging";
+import { idSchema, type Id } from "@/models/id.model";
 
 export const getAllPanitia = async (req: Request, res: Response) => {
     try {
@@ -23,17 +24,17 @@ export const getAllPanitia = async (req: Request, res: Response) => {
 
 export const getPanitia = async (req: Request, res: Response) => {
     try {
-        const validate = await panitiaIdSchema.safeParseAsync(req.params);
+        const validate = await idSchema.safeParseAsync(req.params.id);
         if(!validate.success){
             return validationError(res, parseZodError(validate.error));
         }
 
         const panitia = await db.panitia.findUnique({
-            where: {id: validate.data.id},
+            where: {id: validate.data},
             include: {divisi: true}
         })
         if (!panitia) {
-            return notFound(res, `Data panitia dengan id ${validate.data.id} tidak ditemukan`);
+            return notFound(res, `Data panitia dengan id ${validate.data} tidak ditemukan`);
         }
         return success(res, "Berhasil mendapatkan data panitia", panitia);
     } catch (err) {
@@ -43,9 +44,9 @@ export const getPanitia = async (req: Request, res: Response) => {
 }
 
 
-export const updatePanitia = async (req: Request<{}, {}, PanitiaUpdatable>, res: Response) => {
+export const updatePanitia = async (req: Request<{id:Id}, {}, PanitiaUpdatable>, res: Response) => {
     try {
-        const validateId = await panitiaIdSchema.safeParseAsync(req.params);
+        const validateId = await idSchema.safeParseAsync(req.params.id);
         if (!validateId.success) {
             return validationError(res, parseZodError(validateId.error));
         }
@@ -56,13 +57,13 @@ export const updatePanitia = async (req: Request<{}, {}, PanitiaUpdatable>, res:
         }
 
         const isExists = await db.panitia.findFirst({
-            where: {id: validateId.data.id},
+            where: {id: validateId.data},
         })
         if(!isExists){
-            return notFound(res, `Data panitia dengan id ${validateId.data.id} tidak ditemukan`);
+            return notFound(res, `Data panitia dengan id ${validateId.data} tidak ditemukan`);
         }
         const panitia = await db.panitia.update({
-            where: {id: validateId.data.id},
+            where: {id: validateId.data},
             data: validateData.data,
         })
 
@@ -75,23 +76,23 @@ export const updatePanitia = async (req: Request<{}, {}, PanitiaUpdatable>, res:
 
 export const deletePanitia = async (req: Request, res: Response) => {
     try {
-        const validate = await panitiaIdSchema.safeParseAsync(req.params);
+        const validate = await idSchema.safeParseAsync(req.params.id);
         if(!validate.success){
             return validationError(res, parseZodError(validate.error));
         }
 
         const isExists = await db.panitia.findFirst({
-            where: {id: validate.data.id},
+            where: {id: validate.data},
         })
         if(!isExists){
-            return notFound(res, `Data panitia dengan id ${validate.data.id} tidak ditemukan`);
+            return notFound(res, `Data panitia dengan id ${validate.data} tidak ditemukan`);
         }
 
         const panitia = await db.panitia.delete({
-            where: {id: validate.data.id},
+            where: {id: validate.data},
         })
         
-        return success(res, `Data panitia dengan id ${validate.data.id} berhasil terhapus`);
+        return success(res, `Data panitia dengan id ${validate.data} berhasil terhapus`);
     } catch (err) {
         logging("ERROR", "Error when trying to delete panitia data", err);
         return internalServerError(res);

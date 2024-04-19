@@ -8,7 +8,7 @@ import {
     organisatorIdSchema,
 } from "@/models/accounts/organisator.model";
 import logging from "@/utils/logging";
-
+import { idSchema, type Id } from "@/models/id.model";
 
 export const getAllOrganisator = async (req: Request, res: Response) => {
     try {
@@ -26,19 +26,19 @@ export const getAllOrganisator = async (req: Request, res: Response) => {
 
 export const getOrganisator = async (req: Request, res: Response) => {
     try {
-        const validate = await organisatorIdSchema.safeParseAsync(req.params);
+        const validate = await idSchema.safeParseAsync(req.params.id);
         if(!validate.success){
             return validationError(res, parseZodError(validate.error));
         }
 
         const organisator = await db.organisator.findUnique({
-            where: {id: validate.data.id},
+            where: {id: validate.data},
             include: {state: {
                 select: {id: true, name: true}
             }}
         })
         if (!organisator) {
-            return notFound(res, `Data organisator dengan id ${validate.data.id} tidak ditemukan`);
+            return notFound(res, `Data organisator dengan id ${validate.data} tidak ditemukan`);
         }
         
         return success(res, "Berhasil mendapatkan data organisator", organisator);
@@ -49,9 +49,9 @@ export const getOrganisator = async (req: Request, res: Response) => {
 }
 
 
-export const updateOrganisator = async (req: Request<{}, {}, OrganisatorUpdatable>, res: Response) => {
+export const updateOrganisator = async (req: Request<{id:Id}, {}, OrganisatorUpdatable>, res: Response) => {
     try {
-        const validateId = await organisatorIdSchema.safeParseAsync(req.params);
+        const validateId = await idSchema.safeParseAsync(req.params.id);
         if (!validateId.success) {
             return validationError(res, parseZodError(validateId.error));
         }
@@ -62,13 +62,13 @@ export const updateOrganisator = async (req: Request<{}, {}, OrganisatorUpdatabl
         }
 
         const isExists = await db.organisator.findFirst({
-            where: {id: validateId.data.id},
+            where: {id: validateId.data},
         })
         if(!isExists){
-            return notFound(res, `Data organisator dengan id ${validateId.data.id} tidak ditemukan`);
+            return notFound(res, `Data organisator dengan id ${validateId.data} tidak ditemukan`);
         }
         const organisator = await db.organisator.update({
-            where: {id: validateId.data.id},
+            where: {id: validateId.data},
             data: validateData.data,
         })
 
@@ -81,23 +81,23 @@ export const updateOrganisator = async (req: Request<{}, {}, OrganisatorUpdatabl
 
 export const deleteOrganisator = async (req: Request, res: Response) => {
     try {
-        const validate = await organisatorIdSchema.safeParseAsync(req.params);
+        const validate = await idSchema.safeParseAsync(req.params);
         if(!validate.success){
             return validationError(res, parseZodError(validate.error));
         }
 
         const isExists = await db.organisator.findFirst({
-            where: {id: validate.data.id},
+            where: {id: validate.data},
         })
         if(!isExists){
-            return notFound(res, `Data organisator dengan id ${validate.data.id} tidak ditemukan`);
+            return notFound(res, `Data organisator dengan id ${validate.data} tidak ditemukan`);
         }
 
         const organisator = await db.organisator.delete({
-            where: {id: validate.data.id},
+            where: {id: validate.data},
         })
         
-        return success(res, `Data organisator dengan id ${validate.data.id} berhasil terhapus`);
+        return success(res, `Data organisator dengan id ${validate.data} berhasil terhapus`);
     } catch (err) {
         logging("ERROR", "Error when trying to delete organisator data", err);
         return internalServerError(res);
