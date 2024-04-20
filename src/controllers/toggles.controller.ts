@@ -74,6 +74,14 @@ export const createToggle = async (
         toggle: false,
       },
     });
+
+    const nimUser =
+      req.user?.role === "panitia" ? req.user.data.nim : undefined;
+    logging(
+      "LOGS",
+      `User with nim ${nimUser} created a new toggle with id ${newToggle.id} and name ${newToggle.name}`
+    );
+
     return success(res, "Toggle created successfully", newToggle);
   } catch (err) {
     logging("ERROR", "Error trying to create Toggle", err);
@@ -108,6 +116,15 @@ export const toggleToggle = async (req: Request, res: Response) => {
       },
     });
 
+    const nimUser =
+      req.user?.role === "panitia" ? req.user.data.nim : undefined;
+    logging(
+      "LOGS",
+      `User with nim ${nimUser} switch the toggle with id ${
+        updatedToggle.id
+      } and name ${updatedToggle.name} to ${!toggle.toggle}`
+    );
+
     return success(
       res,
       `Toggle with id ${
@@ -138,6 +155,13 @@ export const deleteToggle = async (req: Request, res: Response) => {
       logging("ERROR", "Toggle not found");
       return notFound(res, `Toggle with id ${req.params.id} did not exist`);
     }
+
+    const nimUser =
+      req.user?.role === "panitia" ? req.user.data.nim : undefined;
+    logging(
+      "LOGS",
+      `User with nim ${nimUser} deleted the toggle with id ${toggle.id} and name ${toggle.name}`
+    );
 
     return success(
       res,
