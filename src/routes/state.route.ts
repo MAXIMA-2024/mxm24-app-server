@@ -13,7 +13,11 @@ import {
   editState,
   addStateLogo,
   addStateGallery,
+  deleteStateGallery,
 } from "@/controllers/state.controller";
+
+import fileUpload from "express-fileupload";
+import { badRequest } from "@/utils/responses";
 
 const router = Router();
 
@@ -24,6 +28,41 @@ router.get("/:id/peserta", showStatePeserta);
 router.post("/", addState);
 router.delete("/:id", removeState);
 router.patch("/:id", editState);
+
+// logo
+router.post(
+  "/:id/logo",
+  verifyJwt,
+  verifyRole(["panitia", "organisator"]),
+  fileUpload({
+    limits: { fileSize: 1 * 1024 * 1024 },
+    limitHandler: (_req, res) => {
+      return badRequest(res, "Logo file size is too large, max 1MB");
+    },
+  }),
+  addStateLogo
+);
+
+// gallery
+router.post(
+  "/:id/gallery",
+  verifyJwt,
+  verifyRole(["panitia", "organisator"]),
+  fileUpload({
+    limits: { fileSize: 1 * 1024 * 1024 },
+    limitHandler: (_req, res) => {
+      return badRequest(res, "Gallery file size is too large, max 1MB");
+    },
+  }),
+  addStateGallery
+);
+
+router.delete(
+  "/:id/gallery/:galleryId",
+  verifyJwt,
+  verifyRole(["panitia", "organisator"]),
+  deleteStateGallery
+);
 
 //add state logo
 //add galery

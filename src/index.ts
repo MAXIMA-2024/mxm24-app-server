@@ -1,6 +1,7 @@
 import Express, { type Request, type Response } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import path from "path";
 
 import ENV from "@/utils/env";
 import logging from "@/utils/logging";
@@ -35,6 +36,12 @@ app.use(
   })
 );
 app.use(Express.json());
+app.use(
+  "/public",
+  Express.static(path.join(__dirname, "../public"), {
+    extensions: ["png", "jpg", "jpeg", "webp"],
+  })
+);
 
 // [Routes]
 app.use(indexRoute);
