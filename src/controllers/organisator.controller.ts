@@ -70,7 +70,9 @@ export const updateOrganisator = async (req: Request<{id:Id}, {}, OrganisatorUpd
             where: {id: validateId.data},
             data: validateData.data,
         })
-
+        if (req.user?.role === "panitia") {
+            logging("LOGS", `Panitia dengan NIM ${req.user.data.nim} mengupdate data organisator dengan NIM ${organisator.nim}`, organisator)
+        }
         return success(res, "Berhasil mengupdate data organisator", organisator);
     } catch (err) {
         logging("ERROR", "Error when trying to update organisator data", err);
@@ -95,7 +97,9 @@ export const deleteOrganisator = async (req: Request, res: Response) => {
         const organisator = await db.organisator.delete({
             where: {id: validate.data},
         })
-        
+        if (req.user?.role === "panitia") {
+            logging("LOGS", `Panitia dengan NIM ${req.user.data.nim} menghapus data organisator dengan NIM ${organisator.nim}`, organisator)
+        }
         return success(res, `Data organisator dengan id ${validate.data} berhasil terhapus`);
     } catch (err) {
         logging("ERROR", "Error when trying to delete organisator data", err);

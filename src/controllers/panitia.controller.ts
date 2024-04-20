@@ -65,7 +65,9 @@ export const updatePanitia = async (req: Request<{id:Id}, {}, PanitiaUpdatable>,
             where: {id: validateId.data},
             data: validateData.data,
         })
-
+        if (req.user?.role === "panitia") {
+            logging("LOGS", `Panitia dengan NIM ${req.user.data.nim} mengupdate data panitia dengan NIM ${panitia.nim}`, panitia)
+        }
         return success(res, "Berhasil mengupdate data panitia", panitia);
     } catch (err) {
         logging("ERROR", "Error when trying to update panitia data", err);
@@ -90,7 +92,9 @@ export const deletePanitia = async (req: Request, res: Response) => {
         const panitia = await db.panitia.delete({
             where: {id: validate.data},
         })
-        
+        if (req.user?.role === "panitia") {
+            logging("LOGS", `Panitia dengan NIM ${req.user.data.nim} menghapus data panitia dengan NIM ${panitia.nim}`, panitia)
+        }
         return success(res, `Data panitia dengan id ${validate.data} berhasil terhapus`);
     } catch (err) {
         logging("ERROR", "Error when trying to delete panitia data", err);
