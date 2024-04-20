@@ -20,6 +20,9 @@ export const verifikasi = async (
       return validationError(res, parseZodError(validateBody.error));
     }
 
+    const nimSender =
+      req.user?.role === "panitia" ? req.user.data.nim : undefined;
+
     if (req.body.role === "panitia") {
       const panitia = await db.panitia.findUnique({
         where: {
@@ -42,12 +45,33 @@ export const verifikasi = async (
         data: {
           isVerified: !panitia.isVerified,
         },
+        select: {
+          nim: true,
+          isVerified: true,
+        },
       });
 
-      return success(
-        res,
-        `Panitia with id ${validateBody.data.id} verified successfully`
-      );
+      if (updatedPanitia.isVerified) {
+        logging(
+          "LOGS",
+          `Panitia with nim ${nimSender} verified the panitia with nim ${updatedPanitia.nim}`
+        );
+
+        return success(
+          res,
+          `Panitia with nim ${updatedPanitia.nim} verified successfully`
+        );
+      } else {
+        logging(
+          "LOGS",
+          `Panitia with nim ${nimSender} unverified the panitia with nim ${updatedPanitia.nim}`
+        );
+
+        return success(
+          res,
+          `Panitia with nim ${updatedPanitia.nim} removed from verified list`
+        );
+      }
     }
 
     const organisator = await db.organisator.findUnique({
@@ -71,12 +95,33 @@ export const verifikasi = async (
       data: {
         isVerified: !organisator.isVerified,
       },
+      select: {
+        nim: true,
+        isVerified: true,
+      },
     });
 
-    return success(
-      res,
-      `Organisator with id ${validateBody.data.id} verified successfully`
-    );
+    if (updatedOrganisator.isVerified) {
+      logging(
+        "LOGS",
+        `Panitia with nim ${nimSender} verified the Organisator with nim ${updatedOrganisator.nim}`
+      );
+
+      return success(
+        res,
+        `Organisator with nim ${updatedOrganisator.nim} verified successfully`
+      );
+    } else {
+      logging(
+        "LOGS",
+        `Panitia with nim ${nimSender} unverified the Organisator with nim ${updatedOrganisator.nim}`
+      );
+
+      return success(
+        res,
+        `Organisator with nim ${updatedOrganisator.nim} removed from verified list`
+      );
+    }
   } catch (err) {
     logging("ERROR", `Error trying to verify user`, err);
     return internalServerError(res);
