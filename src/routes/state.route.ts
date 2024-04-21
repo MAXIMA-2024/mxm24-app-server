@@ -3,6 +3,10 @@ import verifyJwt from "@/middlewares/verifyJwt.middleware";
 import verifyDivisiPanitia from "@/middlewares/verifyDivisiPanitia.middleware";
 import verifyRole from "@/middlewares/verifyRole.middleware";
 
+//notes tio
+// mau logs dimana aja ya ?
+// untuk yang update ada error dengan manual role detection
+
 import {
   getAllDay,
   getAllState,

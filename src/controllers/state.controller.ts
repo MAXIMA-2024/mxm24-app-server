@@ -8,6 +8,7 @@ import {
   success,
   unauthorized,
   validationError,
+  forbidden,
 } from "@/utils/responses";
 
 import db from "@/services/db";
@@ -77,7 +78,20 @@ export const showState = async (req: Request, res: Response) => {
 
 //me-return daftar peserta yang terdaftar pada state sesuai id
 export const showStatePeserta = async (req: Request, res: Response) => {
-  res.send({ message: `daftar peserta pada state ${req.params.id}` });
+  try {
+    const validate = await stateIdSchema.safeParseAsync(req.params);
+    if (!validate.success) {
+      return validationError(res, parseZodError(validate.error));
+    }
+
+    const state = await db.stateRegistration.findMany({
+      where: { id: validate.data.id },
+    });
+
+    return success(res, "Berhasil mendapatkan data peserta", state);
+  } catch (err) {
+    return internalServerError;
+  }
 };
 
 //menambah state baru
@@ -141,6 +155,28 @@ export const editState = async (
       return validationError(res, parseZodError(validate.error));
     }
 
+    //checking manual apakah panitia merupakan enum 1 2 3 4
+    if (
+      req.user?.role === "panitia" &&
+      ![1, 2, 3, 4].includes(req.user.data.divisiId)
+    ) {
+      return forbidden(
+        res,
+        "Divisi anda tidak memiliki akses untuk mengedit state ini"
+      );
+    }
+
+    //check manual apakah organisator
+    // if (
+    //   req.user?.role === "organisator" &&
+    //   req.user.data.stateId !== validate.data.stateId <- ini masih error karena ga nge passing state id
+    // ) {
+    //   return forbidden(
+    //     res,
+    //     "Anda tidak memiliki akses untuk mengedit state ini"
+    //   );
+    // }
+
     const isExist = await db.state.findFirst({
       where: { id: validateId.data.id },
     });
@@ -156,7 +192,7 @@ export const editState = async (
       where: { id: validateId.data.id },
       data: validate.data,
     });
-
+    logging;
     return success(res, "Berhasil mengupdate state");
   } catch (err) {
     return internalServerError(res);
