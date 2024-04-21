@@ -21,6 +21,7 @@ import {
   stateUpdatableSchema,
   stateIdSchema,
   type stateUpdatableSchemaT,
+  type stateIdSchemaT,
 } from "@/models/state/state.model";
 import logging from "@/utils/logging";
 import { idSchema } from "@/models/id.model";
@@ -102,12 +103,64 @@ export const addState = async (
 
 //remove state sesuai id
 export const removeState = async (req: Request, res: Response) => {
-  res.send({ message: `berhasil menghapus state ${req.params.id}` });
+  try {
+    const validate = await stateIdSchema.safeParseAsync(req.params);
+    if (!validate.success) {
+      return validationError(res, parseZodError(validate.error));
+    }
+
+    const state = await db.state.delete({ where: { id: validate.data.id } });
+    if (!state) {
+      return notFound(
+        res,
+        `Barang dengan id ${validate.data.id} tidak ditemukan`
+      );
+    }
+
+    return success(res, "Berhasil Menghapus state");
+  } catch (err) {
+    return internalServerError(res);
+  }
 };
 
 //edit informasi pada state sesuai id
-export const editState = async (req: Request, res: Response) => {
-  res.send({ message: `mengedit state ${req.params.id}` });
+export const editState = async (
+  req: Request<{}, {}, Partial<stateUpdatableSchemaT>>,
+  res: Response
+) => {
+  try {
+    const validateId = await stateIdSchema.safeParseAsync(req.params);
+    if (!validateId.success) {
+      return validationError(res, parseZodError(validateId.error));
+    }
+
+    const validate = await stateUpdatableSchema
+      .partial()
+      .safeParseAsync(req.body);
+    if (!validate.success) {
+      return validationError(res, parseZodError(validate.error));
+    }
+
+    const isExist = await db.state.findFirst({
+      where: { id: validateId.data.id },
+    });
+
+    if (!isExist) {
+      return notFound(
+        res,
+        `state dengan id ${validateId.data.id} tidak ditemukan`
+      );
+    }
+
+    const barang = await db.state.update({
+      where: { id: validateId.data.id },
+      data: validate.data,
+    });
+
+    return success(res, "Berhasil mengupdate state");
+  } catch (err) {
+    return internalServerError(res);
+  }
 };
 
 //menambah logo state sesuai id

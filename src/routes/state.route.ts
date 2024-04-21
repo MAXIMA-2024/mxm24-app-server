@@ -26,8 +26,19 @@ router.get("/", verifyJwt, getAllState);
 router.get("/:id", verifyJwt, showState);
 router.get("/:id/peserta", showStatePeserta);
 router.post("/", verifyJwt, verifyRole, addState);
-router.delete("/:id", removeState);
-router.patch("/:id", editState);
+router.delete(
+  "/:id",
+  verifyJwt,
+  verifyRole(["panitia"]),
+  verifyDivisiPanitia([1, 2, 3, 4]),
+  removeState
+);
+router.patch(
+  "/:id",
+  verifyJwt,
+  verifyRole(["panitia", "organisator"]),
+  editState
+);
 
 // logo
 router.post(

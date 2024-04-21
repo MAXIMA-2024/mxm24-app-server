@@ -33,3 +33,4 @@ export const stateUpdatableSchema = stateSchema.pick({
 });
 
 export type stateUpdatableSchemaT = z.infer<typeof stateUpdatableSchema>;
+export type stateIdSchemaT = z.infer<typeof stateIdSchema>;
