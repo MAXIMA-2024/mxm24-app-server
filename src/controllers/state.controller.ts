@@ -22,6 +22,12 @@ import {
   stateIdSchema,
   type stateUpdatableSchemaT,
 } from "@/models/state/state.model";
+import logging from "@/utils/logging";
+import { idSchema } from "@/models/id.model";
+
+import type { UploadedFile } from "express-fileupload";
+import { nanoid } from "nanoid";
+import path from "path";
 
 //me-return semua hari acara state maxima
 export const getAllDay = async (req: Request, res: Response) => {
@@ -106,10 +112,244 @@ export const editState = async (req: Request, res: Response) => {
 
 //menambah logo state sesuai id
 export const addStateLogo = async (req: Request, res: Response) => {
-  res.send({ message: `menambahkan logo state ${req.params.id}` });
+  try {
+    const validateId = await idSchema.safeParseAsync(req.params.id);
+    if (!validateId.success) {
+      return validationError(res, parseZodError(validateId.error));
+    }
+
+    if (
+      req.user?.role === "panitia" &&
+      ![
+        1, // Novator
+        2, // Charta
+        3, // Actus
+        4, // Scriptum
+      ].includes(req.user.data.divisiId)
+    ) {
+      return unauthorized(
+        res,
+        "Divisi anda tidak memiliki akses untuk mengupload logo state"
+      );
+    }
+
+    if (
+      req.user?.role === "organisator" &&
+      req.user.data.stateId !== validateId.data
+    ) {
+      return unauthorized(
+        res,
+        "Anda tidak memiliki akses untuk mengupload logo STATE lain"
+      );
+    }
+
+    const state = await db.state.findUnique({
+      where: { id: validateId.data },
+    });
+
+    if (!state) {
+      return notFound(
+        res,
+        `STATE dengan id ${validateId.data} tidak ditemukan`
+      );
+    }
+
+    if (!req.files || !req.files.logo) {
+      return validationError(res, "Logo is required");
+    }
+
+    const allowedMimeTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/webp",
+    ];
+    const logo = req.files.logo as UploadedFile;
+
+    if (!allowedMimeTypes.includes(logo.mimetype)) {
+      return validationError(res, "Logo must be an image file");
+    }
+
+    const fileName = `${state.id}.${logo.mimetype.split("/")[1]}`;
+    await logo.mv(path.join(__dirname, "../../public/state/logos/", fileName));
+
+    await db.state.update({
+      where: { id: state.id },
+      data: { logo: "/public/state/logos/" + fileName },
+    });
+
+    return success(res, "Berhasil mengupload logo state", {
+      logo: "/public/state/logos/" + fileName,
+    });
+  } catch (err) {
+    logging("ERROR", "Failed to upload state logo", err);
+    return internalServerError(res);
+  }
 };
 
 //menambah gallery pada state sesuai id
 export const addStateGallery = async (req: Request, res: Response) => {
-  res.send({ message: `menambahkan gallery state ${req.params.id}` });
+  try {
+    const validateId = await idSchema.safeParseAsync(req.params.id);
+    if (!validateId.success) {
+      return validationError(res, parseZodError(validateId.error));
+    }
+
+    if (
+      req.user?.role === "panitia" &&
+      ![
+        1, // Novator
+        2, // Charta
+        3, // Actus
+        4, // Scriptum
+      ].includes(req.user.data.divisiId)
+    ) {
+      return unauthorized(
+        res,
+        "Divisi anda tidak memiliki akses untuk mengupload logo state"
+      );
+    }
+
+    if (
+      req.user?.role === "organisator" &&
+      req.user.data.stateId !== validateId.data
+    ) {
+      return unauthorized(
+        res,
+        "Anda tidak memiliki akses untuk mengupload logo STATE lain"
+      );
+    }
+
+    const state = await db.state.findUnique({
+      where: { id: validateId.data },
+      include: {
+        _count: {
+          select: { gallery: true },
+        },
+      },
+    });
+
+    if (!state) {
+      return notFound(
+        res,
+        `STATE dengan id ${validateId.data} tidak ditemukan`
+      );
+    }
+
+    if (state._count.gallery >= 5) {
+      return conflict(res, "Gallery STATE maksimal 5 gambar");
+    }
+
+    if (!req.files || !req.files.gallery) {
+      return validationError(res, "Gallery is required");
+    }
+
+    const allowedMimeTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/webp",
+    ];
+
+    const gallery = req.files.gallery;
+    const galleryArray = Array.isArray(gallery) ? gallery : [gallery];
+
+    if (galleryArray.length + state._count.gallery > 5) {
+      return conflict(res, "Gallery STATE maksimal 5 gambar");
+    }
+
+    await Promise.all(
+      galleryArray.map(async (file) => {
+        if (!allowedMimeTypes.includes(file.mimetype)) {
+          return validationError(res, "Gallery must be an image file");
+        }
+
+        const fileName = `${state.id}-${nanoid()}.${
+          file.mimetype.split("/")[1]
+        }`;
+        await file.mv(
+          path.join(__dirname, "../../public/state/kegiatan/", fileName)
+        );
+
+        await db.stateGallery.create({
+          data: {
+            stateId: state.id,
+            url: "/public/state/kegiatan/" + fileName,
+          },
+        });
+      })
+    );
+
+    return created(res, "Berhasil mengupload gallery state");
+  } catch (err) {
+    logging("ERROR", "Failed to upload state gallery", err);
+    return internalServerError(res);
+  }
+};
+
+export const deleteStateGallery = async (req: Request, res: Response) => {
+  try {
+    const validateId = await idSchema.safeParseAsync(req.params.id);
+    if (!validateId.success) {
+      return validationError(res, parseZodError(validateId.error));
+    }
+
+    const validateGalleryId = await idSchema.safeParseAsync(
+      req.params.galleryId
+    );
+    if (!validateGalleryId.success) {
+      return validationError(res, parseZodError(validateGalleryId.error));
+    }
+
+    if (
+      req.user?.role === "panitia" &&
+      ![
+        1, // Novator
+        2, // Charta
+        3, // Actus
+        4, // Scriptum
+      ].includes(req.user.data.divisiId)
+    ) {
+      return unauthorized(
+        res,
+        "Divisi anda tidak memiliki akses untuk mengupload logo state"
+      );
+    }
+
+    if (
+      req.user?.role === "organisator" &&
+      req.user.data.stateId !== validateId.data
+    ) {
+      return unauthorized(
+        res,
+        "Anda tidak memiliki akses untuk mengupload logo STATE lain"
+      );
+    }
+
+    const gallery = await db.stateGallery.findUnique({
+      where: {
+        stateId: validateId.data,
+        id: validateGalleryId.data,
+      },
+    });
+
+    if (!gallery) {
+      return notFound(
+        res,
+        `Gallery dengan id ${validateGalleryId.data} tidak ditemukan`
+      );
+    }
+
+    await db.stateGallery.delete({
+      where: {
+        stateId: validateId.data,
+        id: validateGalleryId.data,
+      },
+    });
+
+    return success(res, "Berhasil menghapus gallery state");
+  } catch (err) {
+    logging("ERROR", "Failed to delete state gallery", err);
+    return internalServerError(res);
+  }
 };
