@@ -18,8 +18,9 @@ import { daySchema, type Day } from "@/models/state/day.model";
 //state model
 import {
   stateSchema,
-  type stateUpdatableSchema,
+  stateUpdatableSchema,
   stateIdSchema,
+  type stateUpdatableSchemaT,
 } from "@/models/state/state.model";
 
 //me-return semua hari acara state maxima
@@ -73,8 +74,24 @@ export const showStatePeserta = async (req: Request, res: Response) => {
 };
 
 //menambah state baru
-export const addState = async (req: Request, res: Response) => {
-  res.send({ message: `berhasil menambahkan state baru` });
+export const addState = async (
+  req: Request<{}, {}, stateUpdatableSchemaT>,
+  res: Response
+) => {
+  try {
+    const validate = await stateUpdatableSchema.safeParseAsync(req.body);
+    if (!validate.success) {
+      return validationError(res, parseZodError(validate.error));
+    }
+
+    const state = await db.state.create({
+      data: { ...validate.data, logo: "-" },
+    });
+
+    return created(res, "Berhasil menambahkan state");
+  } catch (err) {
+    internalServerError(res);
+  }
 };
 
 //remove state sesuai id

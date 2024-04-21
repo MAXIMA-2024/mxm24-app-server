@@ -17,11 +17,11 @@ import {
 
 const router = Router();
 
-router.get("/dayManagement", getAllDay);
-router.get("/", getAllState);
-router.get("/:id", showState);
+router.get("/enum/dayManagement", getAllDay);
+router.get("/", verifyJwt, getAllState);
+router.get("/:id", verifyJwt, showState);
 router.get("/:id/peserta", showStatePeserta);
-router.post("/", addState);
+router.post("/", verifyJwt, verifyRole, addState);
 router.delete("/:id", removeState);
 router.patch("/:id", editState);
 

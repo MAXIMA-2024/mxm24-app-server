@@ -27,9 +27,9 @@ export const stateIdSchema = z.object({
 export const stateUpdatableSchema = stateSchema.pick({
   name: true,
   dayId: true,
-  logo: true,
-  gallery: true,
   description: true,
   location: true,
   quota: true,
 });
+
+export type stateUpdatableSchemaT = z.infer<typeof stateUpdatableSchema>;
