@@ -44,7 +44,21 @@ export const enumDay = async (req: Request, res: Response) => {
 //me-return semua state yang terdaftar dalam maxima
 export const getAllState = async (req: Request, res: Response) => {
   try {
-    const states = await db.state.findMany();
+    const states = await db.state.findMany({
+      select: {
+        id: true,
+        name: true,
+        logo: true,
+        quota: true,
+        day: true,
+        _count: {
+          select: {
+            StateRegistration: true,
+          },
+        },
+      },
+    });
+
     return success(res, "Berhasil mendapatkan semua state", states);
   } catch (err) {
     return internalServerError(res);
@@ -61,6 +75,13 @@ export const showState = async (req: Request, res: Response) => {
 
     const state = await db.state.findUnique({
       where: { id: validate.data.id },
+      include: {
+        _count: {
+          select: {
+            StateRegistration: true,
+          },
+        },
+      },
     });
 
     if (!state) {
@@ -86,6 +107,16 @@ export const showStatePeserta = async (req: Request, res: Response) => {
 
     const state = await db.stateRegistration.findMany({
       where: { id: validate.data.id },
+      include: {
+        mahasiswa: {
+          select: {
+            id: true,
+            nim: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
     });
 
     return success(res, "Berhasil mendapatkan data peserta", state);
@@ -109,7 +140,14 @@ export const addState = async (
       data: { ...validate.data, logo: "-" },
     });
 
-    return created(res, "Berhasil menambahkan state");
+    if (req.user?.role === "panitia") {
+      logging(
+        "LOGS",
+        `Panitia ${req.user.data.name} - ${req.user.data.nim} menambahkan state ${state.name}`
+      );
+    }
+
+    return created(res, "Berhasil menambahkan state", state);
   } catch (err) {
     internalServerError(res);
   }
@@ -123,11 +161,23 @@ export const removeState = async (req: Request, res: Response) => {
       return validationError(res, parseZodError(validate.error));
     }
 
-    const state = await db.state.delete({ where: { id: validate.data.id } });
-    if (!state) {
+    const isExist = await db.state.findFirst({
+      where: { id: validate.data.id },
+    });
+
+    if (!isExist) {
       return notFound(
         res,
-        `Barang dengan id ${validate.data.id} tidak ditemukan`
+        `STATE dengan id ${validate.data.id} tidak ditemukan`
+      );
+    }
+
+    const state = await db.state.delete({ where: { id: validate.data.id } });
+
+    if (req.user?.role === "panitia") {
+      logging(
+        "LOGS",
+        `Panitia ${req.user.data.name} - ${req.user.data.nim} menghapus state ${state.name}`
       );
     }
 
@@ -162,20 +212,19 @@ export const editState = async (
     ) {
       return forbidden(
         res,
-        "Divisi anda tidak memiliki akses untuk mengedit state ini"
+        "Divisi anda tidak memiliki akses untuk mengedit STATE ini"
       );
     }
 
-    //check manual apakah organisator
-    // if (
-    //   req.user?.role === "organisator" &&
-    //   req.user.data.stateId !== validate.data.stateId <- ini masih error karena ga nge passing state id
-    // ) {
-    //   return forbidden(
-    //     res,
-    //     "Anda tidak memiliki akses untuk mengedit state ini"
-    //   );
-    // }
+    if (
+      req.user?.role === "organisator" &&
+      req.user.data.stateId !== validateId.data.id
+    ) {
+      return forbidden(
+        res,
+        "Anda tidak memiliki akses untuk mengedit STATE lain"
+      );
+    }
 
     const isExist = await db.state.findFirst({
       where: { id: validateId.data.id },
@@ -188,12 +237,26 @@ export const editState = async (
       );
     }
 
-    const barang = await db.state.update({
+    const state = await db.state.update({
       where: { id: validateId.data.id },
       data: validate.data,
     });
-    logging;
-    return success(res, "Berhasil mengupdate state");
+
+    if (req.user?.role === "panitia") {
+      logging(
+        "LOGS",
+        `Panitia ${req.user.data.name} - ${req.user.data.nim} mengubah informasi state ${state.name}`
+      );
+    }
+
+    if (req.user?.role === "organisator") {
+      logging(
+        "LOGS",
+        `Organisator ${req.user.data.name} - ${req.user.data.nim} mengubah informasi state ${state.name}`
+      );
+    }
+
+    return success(res, "Berhasil mengupdate state", state);
   } catch (err) {
     return internalServerError(res);
   }
@@ -446,6 +509,14 @@ export const deleteStateGallery = async (req: Request, res: Response) => {
 //enum organisator
 export const enumOrganisator = async (req: Request, res: Response) => {
   try {
+    const states = await db.state.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    return success(res, "Berhasil mendapatkan semua enum state", states);
   } catch (err) {
     return internalServerError(res);
   }

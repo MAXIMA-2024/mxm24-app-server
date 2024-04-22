@@ -29,6 +29,8 @@ import { badRequest } from "@/utils/responses";
 const router = Router();
 
 router.get("/enum/dayManagement", enumDay);
+router.get("/enum/organisator", enumOrganisator);
+
 router.get("/", verifyJwt, getAllState);
 router.get("/:id", verifyJwt, showState);
 router.get("/:id/peserta", showStatePeserta);
@@ -40,7 +42,7 @@ router.delete(
   verifyDivisiPanitia([1, 2, 3, 4]),
   removeState
 );
-router.patch(
+router.put(
   "/:id",
   verifyJwt,
   verifyRole(["panitia", "organisator"]),
@@ -81,8 +83,6 @@ router.delete(
   verifyRole(["panitia", "organisator"]),
   deleteStateGallery
 );
-
-router.get("/enum/organisator", enumOrganisator);
 
 //add state logo
 //add galery

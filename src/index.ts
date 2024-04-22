@@ -10,7 +10,7 @@ import { notFound } from "@/utils/responses";
 // [Route imports]
 import indexRoute from "@/routes/index.route";
 import authRoute from "@/routes/auth.route";
-import state from "@/routes/state.route";
+import stateRoute from "@/routes/state.route";
 
 const app = Express();
 
@@ -46,7 +46,7 @@ app.use(
 // [Routes]
 app.use(indexRoute);
 app.use("/auth", authRoute);
-app.use("/state", state);
+app.use("/state", stateRoute);
 
 // [Global 404]
 app.all("*", (_req: Request, res: Response) => {
