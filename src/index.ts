@@ -1,6 +1,7 @@
 import Express, { type Request, type Response } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import path from "path";
 
 import ENV from "@/utils/env";
 import logging from "@/utils/logging";
@@ -13,6 +14,7 @@ import toggleRoute from "@/routes/toggle.route";
 import verifikasiRoute from "@/routes/verifikasi.route";
 import panitiaRoute from "@/routes/panitia.route";
 import organisatorRoute from "@/routes/organisator.route";
+import stateRoute from "@/routes/state.route";
 
 const app = Express();
 
@@ -38,6 +40,12 @@ app.use(
   })
 );
 app.use(Express.json());
+app.use(
+  "/public",
+  Express.static(path.join(__dirname, "../public"), {
+    extensions: ["png", "jpg", "jpeg", "webp"],
+  })
+);
 
 // [Routes]
 app.use(indexRoute);
@@ -46,6 +54,7 @@ app.use("/toggle", toggleRoute);
 app.use("/verifikasi", verifikasiRoute);
 app.use("/panitia", panitiaRoute);
 app.use("/organisator", organisatorRoute);
+app.use("/state", stateRoute);
 
 // [Global 404]
 app.all("*", (_req: Request, res: Response) => {
