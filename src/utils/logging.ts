@@ -1,7 +1,6 @@
 import ENV from "@/utils/env";
-import db from "@/services/db";
 
-type LogLevel = "LOGS" | "INFO" | "WARN" | "DEBUG" | "ERROR";
+type LogLevel = "INFO" | "WARN" | "DEBUG" | "ERROR";
 
 /**
  * Prints log messages to the console based on the specified log level.
@@ -10,7 +9,7 @@ type LogLevel = "LOGS" | "INFO" | "WARN" | "DEBUG" | "ERROR";
  * @param message - The log message to be printed.
  * @param err - Optional error object to be printed along with the log message.
  */
-const print = (level: LogLevel, message: string, err?: unknown) => {
+const print = (level: LogLevel, message: string, err?: Error) => {
   const now = new Date().toISOString();
   if (level === "INFO") {
     console.log(`${now} - [INFO]: ${message}`);
@@ -26,7 +25,7 @@ const print = (level: LogLevel, message: string, err?: unknown) => {
 
   if (level === "ERROR") {
     console.error(`${now} - [ERROR]: ${message}`);
-    if (err) console.error(err);
+    console.error(err);
   }
 };
 
@@ -37,22 +36,10 @@ const print = (level: LogLevel, message: string, err?: unknown) => {
  * @param message - The log message.
  * @param err - An optional error object.
  */
-const logging = (level: LogLevel, message: string, err?: unknown) => {
+const logging = (level: LogLevel, message: string, err?: Error) => {
   if (ENV.NODE_ENV === "development" && level === "DEBUG") {
     print(level, message, err);
     return;
-  }
-
-  if (level === "LOGS") {
-    db.logs
-      .create({
-        data: {
-          action: message,
-        },
-      })
-      .catch((err) => {
-        print("ERROR", "Failed to log to database", err);
-      });
   }
 
   print(level, message, err);
