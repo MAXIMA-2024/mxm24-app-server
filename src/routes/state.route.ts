@@ -6,9 +6,11 @@ import verifyRole from "@/middlewares/verifyRole.middleware";
 //notes tio
 // mau logs dimana aja ya ?
 // untuk yang update ada error dengan manual role detection
+// implementasi yang get allstate
+//belum implementasi enum organisator
 
 import {
-  getAllDay,
+  enumDay,
   getAllState,
   showState,
   showStatePeserta,
@@ -18,6 +20,7 @@ import {
   addStateLogo,
   addStateGallery,
   deleteStateGallery,
+  enumOrganisator,
 } from "@/controllers/state.controller";
 
 import fileUpload from "express-fileupload";
@@ -25,7 +28,7 @@ import { badRequest } from "@/utils/responses";
 
 const router = Router();
 
-router.get("/enum/dayManagement", getAllDay);
+router.get("/enum/dayManagement", enumDay);
 router.get("/", verifyJwt, getAllState);
 router.get("/:id", verifyJwt, showState);
 router.get("/:id/peserta", showStatePeserta);
@@ -78,6 +81,8 @@ router.delete(
   verifyRole(["panitia", "organisator"]),
   deleteStateGallery
 );
+
+router.get("/enum/organisator", enumOrganisator);
 
 //add state logo
 //add galery

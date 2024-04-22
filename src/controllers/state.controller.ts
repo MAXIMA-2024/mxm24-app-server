@@ -32,7 +32,7 @@ import { nanoid } from "nanoid";
 import path from "path";
 
 //me-return semua hari acara state maxima
-export const getAllDay = async (req: Request, res: Response) => {
+export const enumDay = async (req: Request, res: Response) => {
   try {
     const days = await db.day.findMany();
     return success(res, "Berhasil mendapatkan semua hari state", days);
@@ -439,6 +439,14 @@ export const deleteStateGallery = async (req: Request, res: Response) => {
     return success(res, "Berhasil menghapus gallery state");
   } catch (err) {
     logging("ERROR", "Failed to delete state gallery", err);
+    return internalServerError(res);
+  }
+};
+
+//enum organisator
+export const enumOrganisator = async (req: Request, res: Response) => {
+  try {
+  } catch (err) {
     return internalServerError(res);
   }
 };
