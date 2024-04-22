@@ -8,7 +8,7 @@ const router = Router();
 
 // verifikasi
 router.put(
-  "/verifikasi",
+  "/",
   verifyJwt,
   verifyRole(["panitia"]),
   verifyDivisiPanitia([1, 2]),

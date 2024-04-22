@@ -41,7 +41,7 @@ app.use(Express.json());
 app.use(indexRoute);
 app.use("/auth", authRoute);
 app.use(toggleRoute);
-app.use(verifikasiRoute);
+app.use("/verifikasi", verifikasiRoute);
 
 // [Global 404]
 app.all("*", (_req: Request, res: Response) => {
