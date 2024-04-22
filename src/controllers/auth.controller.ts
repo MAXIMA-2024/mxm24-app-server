@@ -269,8 +269,16 @@ export const ssoCallback = async (
 export const refresh = async (req: Request, res: Response) => {
   try {
     if (!req.cookies.jwt_refresh) {
-      res.clearCookie("jwt");
-      res.clearCookie("jwt_refresh");
+      res.clearCookie("jwt", {
+        httpOnly: true,
+        secure: ENV.NODE_ENV === "production",
+        sameSite: "none",
+      });
+      res.clearCookie("jwt_refresh", {
+        httpOnly: true,
+        secure: ENV.NODE_ENV === "production",
+        sameSite: "none",
+      });
       return unauthorized(res, "No refresh token found. Please login again");
     }
 
@@ -404,15 +412,31 @@ export const refresh = async (req: Request, res: Response) => {
       email: data.email,
     });
   } catch (err) {
-    res.clearCookie("jwt");
-    res.clearCookie("jwt_refresh");
+    res.clearCookie("jwt", {
+      httpOnly: true,
+      secure: ENV.NODE_ENV === "production",
+      sameSite: "none",
+    });
+    res.clearCookie("jwt_refresh", {
+      httpOnly: true,
+      secure: ENV.NODE_ENV === "production",
+      sameSite: "none",
+    });
     return unauthorized(res, "Invalid refresh token, try login again");
   }
 };
 
 export const logout = (_req: Request, res: Response) => {
-  res.clearCookie("jwt");
-  res.clearCookie("jwt_refresh");
+  res.clearCookie("jwt", {
+    httpOnly: true,
+    secure: ENV.NODE_ENV === "production",
+    sameSite: "none",
+  });
+  res.clearCookie("jwt_refresh", {
+    httpOnly: true,
+    secure: ENV.NODE_ENV === "production",
+    sameSite: "none",
+  });
   return success(res, "Logged out successfully");
 };
 
