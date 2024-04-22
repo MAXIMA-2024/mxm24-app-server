@@ -15,24 +15,24 @@ import verifyDivisiPanitia from "@/middlewares/verifyDivisiPanitia.middleware";
 const router = Router();
 
 // toggles
-router.get("/toggles", allToggles);
-router.get("/toggles/:id", togglebyId);
+router.get("/", allToggles);
+router.get("/:id", togglebyId);
 router.post(
-  "/toggles",
+  "/",
   verifyJwt,
   verifyRole(["panitia"]),
   verifyDivisiPanitia([1, 2]),
   createToggle
 );
 router.put(
-  "/toggles/:id",
+  "/:id",
   verifyJwt,
   verifyRole(["panitia"]),
   verifyDivisiPanitia([1, 2]),
   toggleToggle
 );
 router.delete(
-  "/toggles/:id",
+  "/:id",
   verifyJwt,
   verifyRole(["panitia"]),
   verifyDivisiPanitia([1, 2]),

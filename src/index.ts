@@ -39,7 +39,7 @@ app.use(Express.json());
 // [Routes]
 app.use(indexRoute);
 app.use("/auth", authRoute);
-app.use(toggleRoute);
+app.use("/toggle", toggleRoute);
 
 // [Global 404]
 app.all("*", (_req: Request, res: Response) => {
