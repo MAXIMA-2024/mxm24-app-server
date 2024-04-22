@@ -154,7 +154,7 @@ export const parseZodError = <T = any>(error: ZodError<T>) => {
   const flattened = error.flatten();
 
   const fieldErrors = Object.keys(flattened.fieldErrors)
-    .map((key) => `${key}: ${flattened.fieldErrors[key as keyof true]}`)
+    .map((key) => `${key} ${flattened.fieldErrors[key as keyof true]}`)
     .join(", ");
 
   return fieldErrors;
