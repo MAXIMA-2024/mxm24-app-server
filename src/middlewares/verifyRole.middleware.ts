@@ -10,7 +10,10 @@ const verifyRole =
   (role: ("panitia" | "organisator" | "mahasiswa" | "unknown")[]) =>
   async (req: Request, res: Response, next: NextFunction) => {
     if (!role.includes(req.user?.role!)) {
-      return forbidden(res, `${role} don't have access to this feature`);
+      return forbidden(
+        res,
+        `${req.user?.role} don't have access to this feature`
+      );
     }
 
     return next();
