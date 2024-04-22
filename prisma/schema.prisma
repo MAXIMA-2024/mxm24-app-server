@@ -14,3 +14,129 @@ datasource db {
 }
 
 // !TODO: Buat model bareng backend di rapat abis lebaran
+
+// [STATE]
+model Day {
+  id    Int      @id @default(autoincrement())
+  code  String
+  date  DateTime
+  state State[]
+}
+
+model StateGallery {
+  id        Int      @id @default(autoincrement())
+  url       String
+  state     State?   @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  stateId   Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model State {
+  id                Int                 @id @default(autoincrement())
+  name              String
+  day               Day                 @relation(fields: [dayId], references: [id])
+  dayId             Int
+  logo              String
+  gallery           StateGallery[]
+  description       String              @db.MediumText
+  location          String
+  quota             Int
+  organisator       Organisator[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  StateRegistration StateRegistration[]
+}
+
+model StateRegistration {
+  id          Int       @id @default(autoincrement())
+  state       State     @relation(fields: [stateId], references: [id])
+  stateId     Int
+  mahasiswa   Mahasiswa @relation(fields: [mahasiswaId], references: [id])
+  mahasiswaId Int
+
+  // absen
+  firstAttendance     Boolean   @default(false)
+  lastAttendance      Boolean   @default(false)
+  firstAttendanceTime DateTime?
+  lastAttendanceTime  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// [MalPun]
+// !TODO: Model malpun
+// !TODO: Model transaksi malpun
+
+// [Toggle]
+model Toggle {
+  id        Int      @id @default(autoincrement())
+  name      String
+  toggle    Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// [Accounts]
+
+model DivisiPanitia {
+  id      Int       @id @default(autoincrement())
+  name    String
+  panitia Panitia[]
+}
+
+model Panitia {
+  id         Int           @id @default(autoincrement())
+  name       String
+  nim        String        @unique
+  email      String        @unique
+  divisi     DivisiPanitia @relation(fields: [divisiId], references: [id])
+  divisiId   Int
+  isVerified Boolean       @default(false)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model Organisator {
+  id         Int      @id @default(autoincrement())
+  name       String
+  nim        String   @unique
+  email      String   @unique
+  state      State    @relation(fields: [stateId], references: [id])
+  stateId    Int
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Mahasiswa {
+  id       Int    @id @default(autoincrement())
+  name     String
+  nim      String @unique
+  email    String @unique
+  angkatan Int
+  prodi    String
+
+  // personal data
+  whatsapp String
+  lineId   String
+
+  // personal token generated with nanoid
+  token String // MXM24-[nanoid]
+
+  // extra data, soon kalo ada tambahan
+  // -
+
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  StateRegistration StateRegistration[]
+}
+
+// !TODO: model akun external
+
+model Logs {
+  id        Int      @id @default(autoincrement())
+  action    String
+  timestamp DateTime @default(now())
+}
