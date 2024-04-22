@@ -4,10 +4,12 @@ import logging from "@/utils/logging";
 import parseXML from "@/utils/xml-parser";
 import db from "@/services/db";
 import ENV from "@/utils/env";
-import { panitiaUpdatableSchema, type PanitiaUpdatable } from "@/models/accounts/panitia.model";
+import {
+  panitiaUpdatableSchema,
+  type PanitiaUpdatable,
+} from "@/models/accounts/panitia.model";
 import { roleSchema } from "@/models/accounts/role.model";
-import { nanoid } from 'nanoid'
-
+import { nanoid } from "nanoid";
 
 import {
   ssoSchema,
@@ -23,8 +25,14 @@ import {
   success,
 } from "@/utils/responses";
 import type { JWTModel, JWTRefreshModel } from "@/models/auth/jwt.model";
-import { organisatorUpdatableSchema, type OrganisatorUpdatable } from "@/models/accounts/organisator.model";
-import { mahasiswaUpdatableSchema, type MahasiswaUpdatable } from "@/models/accounts/mahasiswa.model";
+import {
+  organisatorUpdatableSchema,
+  type OrganisatorUpdatable,
+} from "@/models/accounts/organisator.model";
+import {
+  mahasiswaUpdatableSchema,
+  type MahasiswaUpdatable,
+} from "@/models/accounts/mahasiswa.model";
 
 export const ssoCallback = async (
   req: Request<{}, {}, SSOModel>,
@@ -80,7 +88,7 @@ export const ssoCallback = async (
           email: mahasiswa.email,
           ticket: sso.data.ticket,
         },
-        ENV.APP_JWT_SECRET,
+        ENV.APP_JWT_REFRESH_SECRET,
         {
           expiresIn: "7d",
         }
@@ -129,7 +137,7 @@ export const ssoCallback = async (
           email: organisator.email,
           ticket: sso.data.ticket,
         },
-        ENV.APP_JWT_SECRET,
+        ENV.APP_JWT_REFRESH_SECRET,
         {
           expiresIn: "7d",
         }
@@ -178,7 +186,7 @@ export const ssoCallback = async (
           email: panitia.email,
           ticket: sso.data.ticket,
         },
-        ENV.APP_JWT_SECRET,
+        ENV.APP_JWT_REFRESH_SECRET,
         {
           expiresIn: "7d",
         }
@@ -434,71 +442,148 @@ export const onboarding = async (
   req: Request<{}, {}, Onboarding>,
   res: Response
 ) => {
-  if (req.user?.role !== "unknown") {
-    return badRequest(res, "User already registered");
-  }
-
-  const validateRole = await roleSchema.safeParseAsync(req.body.role);
-  if (!validateRole.success) {
-    return validationError(res, parseZodError(validateRole.error));
-  }
-
-  if (req.body.role === "mahasiswa") {
-    const validateData = await mahasiswaUpdatableSchema.safeParseAsync(
-      req.body.data
-    );
-    if (!validateData.success) {
-      return validationError(res, parseZodError(validateData.error));
+  try {
+    if (req.user?.role !== "unknown") {
+      return badRequest(res, "User already registered");
     }
 
-    const newMahasiswa = await db.mahasiswa.create({
-      data: {
-        ...validateData.data,
-        token : `MXM24-${nanoid(10)}`
-      },
-    });
-
-    return success(res, "Mahasiswa account created successfully", newMahasiswa);
-  }
-
-  if (req.body.role === "organisator") {
-    const validateData = await organisatorUpdatableSchema.safeParseAsync(
-      req.body.data
-    );
-    if (!validateData.success) {
-      return validationError(res, parseZodError(validateData.error));
+    const validateRole = await roleSchema.safeParseAsync(req.body.role);
+    if (!validateRole.success) {
+      return validationError(res, parseZodError(validateRole.error));
     }
 
-    const newOrganisator = await db.organisator.create({
-      data: {
-        ...validateData.data,
-        isVerified: false,
-      },
-    });
+    if (req.body.role === "mahasiswa") {
+      const validateData = await mahasiswaUpdatableSchema.safeParseAsync(
+        req.body.data
+      );
+      if (!validateData.success) {
+        return validationError(res, parseZodError(validateData.error));
+      }
 
-    return success(
-      res,
-      "Organisator account created successfully",
-      newOrganisator
-    );
-  }
+      const newMahasiswa = await db.mahasiswa.create({
+        data: {
+          ...validateData.data,
+          token: `MXM24-${nanoid(10)}`,
+        },
+      });
 
-  if (req.body.role === "panitia") {
-    const validateData = await panitiaUpdatableSchema.safeParseAsync(
-      req.body.data
-    );
-    if (!validateData.success) {
-      return validationError(res, parseZodError(validateData.error));
+      const jwtToken = jwt.sign(
+        {
+          email: newMahasiswa.email,
+          role: "mahasiswa",
+          ticket: req.jwt?.ticket!,
+        } as JWTModel,
+        ENV.APP_JWT_SECRET,
+        {
+          expiresIn: "15m",
+        }
+      );
+
+      res.cookie("jwt", jwtToken, {
+        httpOnly: true,
+        secure: ENV.NODE_ENV === "production",
+        sameSite: "none",
+        expires: new Date(Date.now() + 15 * 60 * 1000),
+      });
+
+      return success(
+        res,
+        "Mahasiswa account created successfully",
+        newMahasiswa
+      );
     }
 
-    const newPanitia = await db.panitia.create({
-      data: {
-        ...validateData.data,
-        isVerified: false,
-      },
-    });
+    if (req.body.role === "organisator") {
+      const validateData = await organisatorUpdatableSchema.safeParseAsync(
+        req.body.data
+      );
+      if (!validateData.success) {
+        return validationError(res, parseZodError(validateData.error));
+      }
 
-    return success(res, "Panitia account created successfully", newPanitia);
+      const newOrganisator = await db.organisator.create({
+        data: {
+          ...validateData.data,
+          stateId: undefined,
+          isVerified: false,
+          state: {
+            connect: {
+              id: validateData.data.stateId,
+            },
+          },
+        },
+      });
+
+      const jwtToken = jwt.sign(
+        {
+          email: newOrganisator.email,
+          role: "organisator",
+          ticket: req.jwt?.ticket!,
+        } as JWTModel,
+        ENV.APP_JWT_SECRET,
+        {
+          expiresIn: "15m",
+        }
+      );
+
+      res.cookie("jwt", jwtToken, {
+        httpOnly: true,
+        secure: ENV.NODE_ENV === "production",
+        sameSite: "none",
+        expires: new Date(Date.now() + 15 * 60 * 1000),
+      });
+
+      return success(
+        res,
+        "Organisator account created successfully",
+        newOrganisator
+      );
+    }
+
+    if (req.body.role === "panitia") {
+      const validateData = await panitiaUpdatableSchema.safeParseAsync(
+        req.body.data
+      );
+      if (!validateData.success) {
+        return validationError(res, parseZodError(validateData.error));
+      }
+
+      const newPanitia = await db.panitia.create({
+        data: {
+          ...validateData.data,
+          isVerified: false,
+          divisi: {
+            connect: {
+              id: validateData.data.divisiId,
+            },
+          },
+          divisiId: undefined,
+        },
+      });
+
+      const jwtToken = jwt.sign(
+        {
+          email: newPanitia.email,
+          role: "panitia",
+          ticket: req.jwt?.ticket!,
+        } as JWTModel,
+        ENV.APP_JWT_SECRET,
+        {
+          expiresIn: "15m",
+        }
+      );
+
+      res.cookie("jwt", jwtToken, {
+        httpOnly: true,
+        secure: ENV.NODE_ENV === "production",
+        sameSite: "none",
+        expires: new Date(Date.now() + 15 * 60 * 1000),
+      });
+
+      return success(res, "Panitia account created successfully", newPanitia);
+    }
+  } catch (err) {
+    logging("ERROR", "Error while trying onboard user", err);
+    return internalServerError(res);
   }
-
 };
