@@ -9,6 +9,8 @@ import { notFound } from "@/utils/responses";
 // [Route imports]
 import indexRoute from "@/routes/index.route";
 import authRoute from "@/routes/auth.route";
+import panitiaRoute from "@/routes/panitia.route";
+import organisatorRoute from "@/routes/organisator.route";
 
 const app = Express();
 
@@ -38,6 +40,8 @@ app.use(Express.json());
 // [Routes]
 app.use(indexRoute);
 app.use("/auth", authRoute);
+app.use("/panitia", panitiaRoute);
+app.use("/organisator", organisatorRoute);
 
 // [Global 404]
 app.all("*", (_req: Request, res: Response) => {

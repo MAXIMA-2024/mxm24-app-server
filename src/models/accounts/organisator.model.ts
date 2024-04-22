@@ -37,5 +37,6 @@ export const organisatorUpdatableSchema = organisatorSchema.pick({
   isVerified: true,
 });
 
+
 export type Organisator = z.infer<typeof organisatorSchema>;
 export type OrganisatorUpdatable = z.infer<typeof organisatorUpdatableSchema>;
