@@ -15,6 +15,9 @@ declare namespace Express {
         }
       | {
           role: "unknown";
+          data: {
+            email: string;
+          };
         };
 
     jwt?: import("@/models/auth/jwt.model").JWTModel;

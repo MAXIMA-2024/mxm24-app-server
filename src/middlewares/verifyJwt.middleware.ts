@@ -92,6 +92,9 @@ const verifyJwt = async (req: Request, res: Response, next: NextFunction) => {
 
     req.user = {
       role: "unknown",
+      data: {
+        email: jwtData.email,
+      },
     };
 
     next();
