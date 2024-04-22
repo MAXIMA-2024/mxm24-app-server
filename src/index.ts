@@ -23,6 +23,7 @@ const allowedOrigins = [
   "https://internal.maximaumn.com",
   "https://maximaumn.com",
   "https://maxima.umn.ac.id",
+  "https://maxima.rdhwan.dev", // test server
 ];
 
 // [Global Middlewares]
