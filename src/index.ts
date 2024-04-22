@@ -1,11 +1,15 @@
-import Express, { type Request, type Response } from "express";
+import Express, {
+  type NextFunction,
+  type Request,
+  type Response,
+} from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
 
 import ENV from "@/utils/env";
 import logging from "@/utils/logging";
-import { notFound } from "@/utils/responses";
+import { badRequest, notFound } from "@/utils/responses";
 
 // [Route imports]
 import indexRoute from "@/routes/index.route";
@@ -40,6 +44,16 @@ app.use(
     credentials: true, // Allow credentials to be sent with requests
   })
 );
+
+// [Error handler untuk cors]
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  if (err) {
+    return badRequest(res, err.message);
+  }
+
+  next();
+});
+
 app.use(Express.json());
 app.use(
   "/public",
