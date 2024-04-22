@@ -60,6 +60,12 @@ const verifyJwt = async (req: Request, res: Response, next: NextFunction) => {
         stateId: true,
         email: true,
         isVerified: true,
+        state: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
     if (organisator) {
@@ -80,6 +86,12 @@ const verifyJwt = async (req: Request, res: Response, next: NextFunction) => {
         email: true,
         divisiId: true,
         isVerified: true,
+        divisi: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
     if (panitia) {
