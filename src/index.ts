@@ -10,6 +10,7 @@ import { notFound } from "@/utils/responses";
 import indexRoute from "@/routes/index.route";
 import authRoute from "@/routes/auth.route";
 import toggleRoute from "@/routes/toggle.route";
+import verifikasiRoute from "@/routes/verifikasi.route";
 import panitiaRoute from "@/routes/panitia.route";
 import organisatorRoute from "@/routes/organisator.route";
 
@@ -42,6 +43,7 @@ app.use(Express.json());
 app.use(indexRoute);
 app.use("/auth", authRoute);
 app.use("/toggle", toggleRoute);
+app.use("/verifikasi", verifikasiRoute);
 app.use("/panitia", panitiaRoute);
 app.use("/organisator", organisatorRoute);
 
