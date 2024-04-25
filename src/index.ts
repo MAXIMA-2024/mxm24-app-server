@@ -19,6 +19,7 @@ import verifikasiRoute from "@/routes/verifikasi.route";
 import panitiaRoute from "@/routes/panitia.route";
 import organisatorRoute from "@/routes/organisator.route";
 import stateRoute from "@/routes/state.route";
+import dashboardRoute from "@/routes/dashboard.route";
 
 const app = Express();
 
@@ -70,6 +71,7 @@ app.use("/verifikasi", verifikasiRoute);
 app.use("/panitia", panitiaRoute);
 app.use("/organisator", organisatorRoute);
 app.use("/state", stateRoute);
+app.use("/dashboard", dashboardRoute);
 
 // [Global 404]
 app.all("*", (_req: Request, res: Response) => {
