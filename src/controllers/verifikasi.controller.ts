@@ -10,6 +10,52 @@ import {
 } from "@/utils/responses";
 import { verifikasiSchema, type Verifikasi } from "@/models/verifikasi.model";
 
+export const dataVerifikasi = async (req: Request, res: Response) => {
+  try {
+    const panitia = await db.panitia.findMany({
+      select: {
+        id: true,
+        nim: true,
+        name: true,
+        divisi: true,
+        isVerified: true,
+      },
+    });
+
+    const organisator = await db.organisator.findMany({
+      select: {
+        id: true,
+        nim: true,
+        name: true,
+        state: {
+          select: {
+            name: true,
+          },
+        },
+        isVerified: true,
+      },
+    });
+
+    const data = [
+      ...panitia.map((p) => ({
+        ...p,
+        divisi: p.divisi.name,
+        type: "panitia",
+      })),
+      ...organisator.map((o) => ({
+        ...o,
+        state: o.state.name,
+        type: "organisator",
+      })),
+    ];
+
+    return success(res, "Data verifikasi berhasil didapatkan", data);
+  } catch (err) {
+    logging("ERROR", `Error trying to get data verifikasi`, err);
+    return internalServerError(res);
+  }
+};
+
 export const verifikasi = async (
   req: Request<{}, {}, Verifikasi>,
   res: Response
