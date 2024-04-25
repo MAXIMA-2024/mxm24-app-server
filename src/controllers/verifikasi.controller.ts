@@ -39,13 +39,15 @@ export const dataVerifikasi = async (req: Request, res: Response) => {
     const data = [
       ...panitia.map((p) => ({
         ...p,
-        divisi: p.divisi.name,
-        type: "panitia",
+        divisi: undefined,
+        position: p.divisi.name,
+        role: "panitia",
       })),
       ...organisator.map((o) => ({
         ...o,
-        state: o.state.name,
-        type: "organisator",
+        state: undefined,
+        position: o.state.name,
+        role: "organisator",
       })),
     ];
 
