@@ -81,6 +81,8 @@ export const showState = async (req: Request, res: Response) => {
             StateRegistration: true,
           },
         },
+        day: true,
+        gallery: true,
       },
     });
 
