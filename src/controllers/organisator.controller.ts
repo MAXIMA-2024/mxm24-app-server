@@ -106,7 +106,7 @@ export const updateOrganisator = async (req: Request, res: Response) => {
 
 export const deleteOrganisator = async (req: Request, res: Response) => {
   try {
-    const validate = await idSchema.safeParseAsync(req.params);
+    const validate = await idSchema.safeParseAsync(req.params.id);
     if (!validate.success) {
       return validationError(res, parseZodError(validate.error));
     }
