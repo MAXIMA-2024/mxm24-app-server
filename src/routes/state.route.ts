@@ -34,7 +34,13 @@ router.get("/enum/organisator", enumOrganisator);
 router.get("/", verifyJwt, getAllState);
 router.get("/:id", verifyJwt, showState);
 router.get("/:id/peserta", showStatePeserta);
-router.post("/", verifyJwt, verifyRole, addState);
+router.post(
+  "/",
+  verifyJwt,
+  verifyRole(["panitia"]),
+  verifyDivisiPanitia([1, 2, 3, 4]),
+  addState
+);
 router.delete(
   "/:id",
   verifyJwt,
