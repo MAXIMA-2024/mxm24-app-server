@@ -11,6 +11,7 @@
     "db:seed": "bun src/utils/seed.ts"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@types/bun": "latest",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
