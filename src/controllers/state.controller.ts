@@ -108,7 +108,7 @@ export const showStatePeserta = async (req: Request, res: Response) => {
     }
 
     const state = await db.stateRegistration.findMany({
-      where: { id: validate.data.id },
+      where: { stateId: validate.data.id },
       include: {
         mahasiswa: {
           select: {
