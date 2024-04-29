@@ -98,14 +98,14 @@ export const ssoCallback = async (
       res.cookie("jwt", jwtToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "none",
+        // sameSite: "none",
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
       res.cookie("jwt_refresh", jwtRefreshToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "none",
+        // sameSite: "none",
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
 
@@ -147,14 +147,14 @@ export const ssoCallback = async (
       res.cookie("jwt", jwtToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "none",
+        // sameSite: "none",
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
       res.cookie("jwt_refresh", jwtRefreshToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "none",
+        // sameSite: "none",
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
 
@@ -196,14 +196,14 @@ export const ssoCallback = async (
       res.cookie("jwt", jwtToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "none",
+        // sameSite: "none",
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
       res.cookie("jwt_refresh", jwtRefreshToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "none",
+        // sameSite: "none",
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
 
@@ -240,14 +240,14 @@ export const ssoCallback = async (
     res.cookie("jwt", jwtToken, {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
-      sameSite: "none",
+      // sameSite: "none",
       expires: new Date(Date.now() + 15 * 60 * 1000),
     });
 
     res.cookie("jwt_refresh", jwtRefreshToken, {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
-      sameSite: "none",
+      // sameSite: "none",
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
@@ -272,12 +272,12 @@ export const refresh = async (req: Request, res: Response) => {
       res.clearCookie("jwt", {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "none",
+        // sameSite: "none",
       });
       res.clearCookie("jwt_refresh", {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "none",
+        // sameSite: "none",
       });
       return unauthorized(res, "No refresh token found. Please login again");
     }
@@ -313,7 +313,7 @@ export const refresh = async (req: Request, res: Response) => {
       res.cookie("jwt", jwtToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "none",
+        // sameSite: "none",
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -345,7 +345,7 @@ export const refresh = async (req: Request, res: Response) => {
       res.cookie("jwt", jwtToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "none",
+        // sameSite: "none",
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -377,7 +377,7 @@ export const refresh = async (req: Request, res: Response) => {
       res.cookie("jwt", jwtToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "none",
+        // sameSite: "none",
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -403,7 +403,7 @@ export const refresh = async (req: Request, res: Response) => {
     res.cookie("jwt", jwtToken, {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
-      sameSite: "none",
+      // sameSite: "none",
       expires: new Date(Date.now() + 15 * 60 * 1000),
     });
 
@@ -415,12 +415,12 @@ export const refresh = async (req: Request, res: Response) => {
     res.clearCookie("jwt", {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
-      sameSite: "none",
+      // sameSite: "none",
     });
     res.clearCookie("jwt_refresh", {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
-      sameSite: "none",
+      // sameSite: "none",
     });
     return unauthorized(res, "Invalid refresh token, try login again");
   }
@@ -430,12 +430,12 @@ export const logout = (_req: Request, res: Response) => {
   res.clearCookie("jwt", {
     httpOnly: true,
     secure: ENV.NODE_ENV === "production",
-    sameSite: "none",
+    // sameSite: "none",
   });
   res.clearCookie("jwt_refresh", {
     httpOnly: true,
     secure: ENV.NODE_ENV === "production",
-    sameSite: "none",
+    // sameSite: "none",
   });
   return success(res, "Logged out successfully");
 };
@@ -506,7 +506,7 @@ export const onboarding = async (
       res.cookie("jwt", jwtToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "none",
+        // sameSite: "none",
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -553,7 +553,7 @@ export const onboarding = async (
       res.cookie("jwt", jwtToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "none",
+        // sameSite: "none",
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -600,7 +600,7 @@ export const onboarding = async (
       res.cookie("jwt", jwtToken, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
-        sameSite: "none",
+        // sameSite: "none",
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
