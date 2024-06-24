@@ -3,12 +3,106 @@
 		"_postman_id": "1de62cb8-f1ec-4380-b0cc-26ee15ed48dc",
 		"name": "MAXIMA 2024",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "25244576"
+		"_exporter_id": "25244576",
+		"_collection_link": "https://maxima-2024-api.postman.co/workspace/MAXIMA-2024-API-Workspace~6dd6932f-8cbd-415b-ad4f-5af5b1afc5bf/collection/25244576-1de62cb8-f1ec-4380-b0cc-26ee15ed48dc?action=share&source=collection_link&creator=25244576"
 	},
 	"item": [
 		{
 			"name": "Auth",
 			"item": [
+				{
+					"name": "Onboarding",
+					"item": [
+						{
+							"name": "Onboarding Request (Panitia)",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"role\": \"panitia\",\r\n    \"data\": {\r\n        \"email\": \"James.bernauli@student.umn.ac.id\",\r\n        \"name\": \"James\",\r\n        \"nim\": \"00000013445\",\r\n        \"divisiId\": 2,\r\n        \"isVerified\": false\r\n    }\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/onboarding",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"onboarding"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Organisator",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"role\": \"organisator\",\r\n    \"data\": {\r\n        \"email\": \"Jun.bernauli@student.umn.ac.id\",\r\n        \"name\": \"James\",\r\n        \"nim\": \"00000013325\",\r\n        \"stateId\": 2,\r\n        \"isVerified\": false\r\n    }\r\n\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/auth/onboarding",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"auth",
+												"onboarding"
+											]
+										}
+									},
+									"_postman_previewlanguage": "Text",
+									"header": [],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Mahasiswa",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"role\": \"mahasiswa\",\r\n    \"data\": {\r\n        \"name\": \"Jess\",\r\n        \"nim\": \"00000069985\",\r\n        \"email\": \"Juni.gans@student.umn.ac.id\",\r\n        \"angkatan\": 2024,\r\n        \"prodi\": \"Ilmu Komunikasi\",\r\n        \"whatsapp\": \"084537263445\",\r\n        \"lineId\": \"MaximaGamers\"\r\n    }\r\n\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/auth/onboarding",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"auth",
+												"onboarding"
+											]
+										}
+									},
+									"_postman_previewlanguage": "Text",
+									"header": [],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				},
 				{
 					"name": "SSO Callback",
 					"request": {
@@ -104,9 +198,21 @@
 				},
 				{
 					"name": "Refresh",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{baseUrl}}/auth/refresh",
 							"host": [
@@ -135,6 +241,893 @@
 								"logout"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Panitia",
+			"item": [
+				{
+					"name": "getAllPanitia",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/panitia/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"panitia",
+								""
+							]
+						},
+						"description": "``` typescript\n{\n    id: number;\n    name: string;\n    nim: string;\n    email: string;\n    divisiId: number;\n    isVerified: boolean;\n    createdAt: Date;\n    updatedAt: Date;\n    divisi: {\n        id: number;\n        name: string;\n    };\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "getPanitia",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/panitia/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"panitia",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						},
+						"description": "``` typescript\n{\n    id: number;\n    name: string;\n    nim: string;\n    email: string;\n    divisiId: number;\n    isVerified: boolean;\n    createdAt: Date;\n    updatedAt: Date;\n    divisi: {\n        id: number;\n        name: string;\n    };\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "updatePanitia",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test update panit\",\r\n    \"nim\": \"00000044444\",\r\n    \"email\": \"update.noacc@student.umn.ac.id\",\r\n    \"isVerified\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/panitia/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"panitia",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePanitia",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/panitia/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"panitia",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Organisator",
+			"item": [
+				{
+					"name": "getAllOrganisator",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/organisator/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"organisator",
+								""
+							]
+						},
+						"description": "``` typescript\n{\n    id: number;\n    name: string;\n    nim: string;\n    email: string;\n    stateId: number;\n    isVerified: boolean;\n    createdAt: Date;\n    updatedAt: Date;\n    state: {\n        id: number;\n        name: string;\n\n    };\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "getOrganisator",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/organisator/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"organisator",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						},
+						"description": "``` typescript\n{\n    id: number;\n    name: string;\n    nim: string;\n    email: string;\n    stateId: number;\n    isVerified: boolean;\n    createdAt: Date;\n    updatedAt: Date;\n    state: {\n        id: number;\n        name: string;\n\n    };\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "updateOrganisator",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test update bph\",\r\n    \"nim\": \"00000044444\",\r\n    \"email\": \"update.bph@student.umn.ac.id\",\r\n    \"isVerified\": true\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/organisator/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"organisator",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteOrganisator",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/organisator/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"organisator",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Enums",
+			"item": [
+				{
+					"name": "divisiPanitia",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/panitia/enum/divisiPanitia",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"panitia",
+								"enum",
+								"divisiPanitia"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "enumDay",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/state/enum/dayManagement",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"state",
+								"enum",
+								"dayManagement"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "enumOrganisator",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/state/enum/organisator",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"state",
+								"enum",
+								"organisator"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Toggle",
+			"item": [
+				{
+					"name": "Get all toggles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/toggle",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"toggle"
+							]
+						},
+						"description": "```\n{\n    \"code\": 200,\n    \"message\": \"Toggle created successfully\",\n    \"data\": {\n        \"id\": 4,\n        \"name\": \"malpun\",\n        \"toggle\": false,\n        \"createdAt\": \"2024-04-20T14:21:40.222Z\",\n        \"updatedAt\": \"2024-04-20T14:21:40.222Z\"\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Spesific Toggle",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/toggle/4",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"toggle",
+								"4"
+							]
+						},
+						"description": "```\nRoute:\n{{baseUrl}}/toggles/4\nResult:\n{\n    \"code\": 200,\n    \"message\": \"Toggle with id 4 fetched successfully\",\n    \"data\": {\n        \"id\": 4,\n        \"name\": \"malpun\",\n        \"toggle\": false,\n        \"createdAt\": \"2024-04-20T14:21:40.222Z\",\n        \"updatedAt\": \"2024-04-20T14:21:40.222Z\"\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Toggle",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"malpun\",\r\n    \"toggle\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/toggle",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"toggle"
+							]
+						},
+						"description": "```\n{\n    \"code\": 200,\n    \"message\": \"Toggle created successfully\",\n    \"data\": {\n        \"id\": 4,\n        \"name\": \"malpun\",\n        \"toggle\": false,\n        \"createdAt\": \"2024-04-20T14:21:40.222Z\",\n        \"updatedAt\": \"2024-04-20T14:21:40.222Z\"\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Toggle",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/toggle/4",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"toggle",
+								"4"
+							]
+						},
+						"description": "```\nRoute:\n{{baseUrl}}/toggles/4\nResult:\n{\n    \"code\": 200,\n    \"message\": \"Toggle with id 4 updated successfully, toggle is now true\",\n    \"data\": {\n        \"id\": 4,\n        \"name\": \"malpun\",\n        \"toggle\": true,\n        \"createdAt\": \"2024-04-20T14:21:40.222Z\",\n        \"updatedAt\": \"2024-04-20T14:24:32.955Z\"\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Toggle",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/toggle/4",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"toggle",
+								"4"
+							]
+						},
+						"description": "```\nRoute:\n{{baseUrl}}/toggles/4\nResult:\n{\n    \"code\": 200,\n    \"message\": \"Toggle with id 4 deleted successfully\",\n    \"data\": {\n        \"id\": 4,\n        \"name\": \"malpun\",\n        \"toggle\": true,\n        \"createdAt\": \"2024-04-20T14:21:40.222Z\",\n        \"updatedAt\": \"2024-04-20T14:24:32.955Z\"\n    }\n}\n\n ```"
+					},
+					"response": []
+				}
+			],
+			"description": "testing for toggle API"
+		},
+		{
+			"name": "Verifikasi",
+			"item": [
+				{
+					"name": "Memverifikasi Panitia/Organisator",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 5,\r\n    \"role\": \"organisator\",\r\n    \"isVerified\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/verifikasi",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"verifikasi"
+							]
+						},
+						"description": "PANITIA\n\n```\nsuccessfully verified:\n{\n    \"code\": 200,\n    \"message\": \"Panitia with nim 00000013445 verified successfully\"\n}\nremoved from verified list:\n{\n    \"code\": 200,\n    \"message\": \"Panitia with nim 00000013445 removed from verified list\"\n}\n\n ```\n\nORGANISATOR\n\n```\nsuccessfully verified:\n{\n    \"code\": 200,\n    \"message\": \"Organisator with nim 00000023445 verified successfully\"\n}\nremoved from verified list:\n{\n    \"code\": 200,\n    \"message\": \"Organisator with nim 00000023445 removed from verified list\"\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Data",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/verifikasi",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"verifikasi"
+							]
+						},
+						"description": "```\ntype Data = {\n    position: string;\n    role: string;\n    id: number;\n    name: string;\n    nim: string;\n    isVerified: boolean;\n}\n\n ```"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "State",
+			"item": [
+				{
+					"name": "Gallery",
+					"item": [
+						{
+							"name": "Add Gallery",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "gallery",
+											"type": "file",
+											"src": "/C:/Users/Fathan Ridhwan/Downloads/organisator icon.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/state/:id/gallery",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"state",
+										":id",
+										"gallery"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1",
+											"description": "id state"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Gallery",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Add State",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/state",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"state"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllState",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/state/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"state",
+								""
+							]
+						},
+						"description": "``` typescript\ntype State = {\n    day: {\n        id: number;\n        code: string;\n        date: Date;\n    };\n    id: number;\n    _count: {\n        StateRegistration: number;\n    };\n    name: string;\n    logo: string;\n    quota: number;\n}[]\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "showState",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/state/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"state",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "id state yang dicari"
+								}
+							]
+						},
+						"description": "``` typescript\ntype State = {\n    id: number;\n    name: string;\n    dayId: number;\n    logo: string;\n    description: string;\n    location: string;\n    quota: number;\n    createdAt: Date;\n    updatedAt: Date;\n    _count: {\n        StateRegistration: number;\n    };\n    day: {\n        id: number;\n        code: string;\n        date: Date;\n    };\n    gallery: {\n        id: number;\n        url: string;\n        stateId: number | null;\n        createdAt: Date;\n        updatedAt: Date;\n    }[];\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "showStatePeserta",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/state/:id/peserta",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"state",
+								":id",
+								"peserta"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "id state"
+								}
+							]
+						},
+						"description": "```\ntype State = {\n    id: number;\n    stateId: number;\n    mahasiswaId: number;\n    mahasiswa: {\n        id: number;\n        name: string;\n        nim: string;\n        email: string;\n    };\n    firstAttendance: boolean;\n    lastAttendance: boolean;\n    firstAttendanceTime: Date | null;\n    lastAttendanceTime: Date | null;\n    createdAt: Date;\n    updatedAt: Date;\n})[]\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "removeState",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/state/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"state",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "id state"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add state logo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "logo",
+									"description": "logo buat state",
+									"type": "file",
+									"src": "/C:/Users/Fathan Ridhwan/Downloads/organisator icon.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/state/:id/logo",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"state",
+								":id",
+								"logo"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editState",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/state/4",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"state",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "Dashboard Panitia",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/panitia",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"panitia"
+							]
+						},
+						"description": "``` typescript\ntype DashboardPanitia = {\n    panitia: number,\n    mahasiswa: number,\n    organisator: number,\n    state: number,\n    malpun: number,\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Dashboard Organisator",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/organisator",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"organisator"
+							]
+						},
+						"description": "``` typescript\ntype DashboardOrganisator = {\n    stateOrganisator: number;\n    mahasiswa: number;\n}\n\n ```"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Peserta",
+			"item": [
+				{
+					"name": "Mahasiswa",
+					"item": [
+						{
+							"name": "Get Semua Mahasiswa",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/peserta/mahasiswa",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"peserta",
+										"mahasiswa"
+									]
+								},
+								"description": "``` typescript\ntype Mahasiswa = {\n    id: number;\n    name: string;\n    nim: string;\n    token: string;\n    StateRegistration: {\n        firstAttendance: boolean;\n        lastAttendance: boolean;\n        state: {\n            id: number;\n            name: string;\n        };\n    }[];\n}[];\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "Get single mahasiswa detail",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/peserta/mahasiswa/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"peserta",
+										"mahasiswa",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "id user bukan nim"
+										}
+									]
+								},
+								"description": "``` typescript\ntype MahasiswaDetail = {\n    id: number;\n    name: string;\n    nim: string;\n    email: string;\n    angkatan: number;\n    prodi: string;\n    whatsapp: string;\n    lineId: string;\n    token: string;\n    createdAt: Date;\n    updatedAt: Date;\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "New Request",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Dia\",\r\n    \"nim\": \"000000697584\",\r\n    \"email\": \"dia@student.umn.ac.id\",\r\n    \"angkatan\": 2022,\r\n    \"prodi\": \"akuntansi\",\r\n    \"whatsapp\": \"0837485736574\",\r\n    \"lineId\": \"sadardiriajagabakaldapet\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/peserta/mahasiswa/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"peserta",
+										"mahasiswa",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "id user bukan nim/code/token"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Mahasiswa",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/peserta/mahasiswa/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"peserta",
+										"mahasiswa",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "id user bukan nim/token"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Malpun",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/peserta/malpun",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"peserta",
+								"malpun"
+							]
+						},
+						"description": "\n# Get Malpun Peserta\n\nThis endpoint retrieves the list of participants for a specific event.\n\n## Request\n\n- Method: GET\n- Endpoint: {{baseUrl}}/peserta/malpun\n\n## Response\n\nThe response will include an array of participant objects, each containing details such as participant ID, name, and contact information.\n\nExample response:\n```json\n[\n    {\n        \"id\": 123,\n        \"name\": \"Participant 1\",\n        \"email\": \"participant1@example.com\"\n    },\n    {\n        \"id\": 124,\n        \"name\": \"Participant 2\",\n        \"email\": \"participant2@example.com\"\n    }\n]\n"
 					},
 					"response": []
 				}
