@@ -20,6 +20,7 @@ import panitiaRoute from "@/routes/panitia.route";
 import organisatorRoute from "@/routes/organisator.route";
 import stateRoute from "@/routes/state.route";
 import dashboardRoute from "@/routes/dashboard.route";
+import stateRegistration from "@/routes/stateRegistration.route";
 
 const app = Express();
 
@@ -72,6 +73,7 @@ app.use("/panitia", panitiaRoute);
 app.use("/organisator", organisatorRoute);
 app.use("/state", stateRoute);
 app.use("/dashboard", dashboardRoute);
+app.use("/stateRegistration", stateRegistration);
 
 // [Global 404]
 app.all("*", (_req: Request, res: Response) => {
