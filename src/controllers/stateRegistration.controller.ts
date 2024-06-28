@@ -132,7 +132,7 @@ export const deleteStateRegistration = async (req: Request, res: Response) => {
                 id: isExists.id,
             }
         });
-        logging("LOGS", `${mahasiswa.nim} menghapus state registration`, deleteStateRegistration);
+        logging("LOGS", `${mahasiswa.nim} menghapus state registration stateId: ${isExists.stateId}`, deleteStateRegistration);
         return success(res, "Berhasil menghapus state registration", deleteStateRegistration);
 
     } catch (err) {
