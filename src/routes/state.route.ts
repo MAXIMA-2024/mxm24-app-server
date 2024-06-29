@@ -23,6 +23,8 @@ import {
   enumOrganisator,
 } from "@/controllers/state.controller";
 
+import { absenState } from "@/controllers/absenState.controller";
+
 import fileUpload from "express-fileupload";
 import { badRequest } from "@/utils/responses";
 
@@ -30,6 +32,15 @@ const router = Router();
 
 router.get("/enum/dayManagement", enumDay);
 router.get("/enum/organisator", enumOrganisator);
+
+//absen route
+router.put(
+  "/absen",
+  verifyJwt,
+  verifyRole(["panitia"]),
+  verifyDivisiPanitia([1, 2, 3, 4]),
+  absenState
+);
 
 router.get("/", verifyJwt, getAllState);
 router.get("/:id", verifyJwt, showState);
