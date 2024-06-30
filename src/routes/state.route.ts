@@ -23,7 +23,7 @@ import {
   enumOrganisator,
 } from "@/controllers/state.controller";
 
-import { absenState } from "@/controllers/absenState.controller";
+import { absenState } from "@/controllers/state.absen.controller";
 
 import fileUpload from "express-fileupload";
 import { badRequest } from "@/utils/responses";
