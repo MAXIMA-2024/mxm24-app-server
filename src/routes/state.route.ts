@@ -23,14 +23,42 @@ import {
   enumOrganisator,
 } from "@/controllers/state.controller";
 
+import {
+  getStateRegistration,
+  addStateRegistration,
+  deleteStateRegistration,
+} from "@/controllers/state.registration.controller";
+
 import fileUpload from "express-fileupload";
 import { badRequest } from "@/utils/responses";
 
 const router = Router();
 
+// enums
 router.get("/enum/dayManagement", enumDay);
 router.get("/enum/organisator", enumOrganisator);
 
+// state registration
+router.get(
+  "/registration",
+  verifyJwt,
+  verifyRole(["mahasiswa"]),
+  getStateRegistration
+);
+router.post(
+  "/registration",
+  verifyJwt,
+  verifyRole(["mahasiswa"]),
+  addStateRegistration
+);
+router.delete(
+  "/registration/:id",
+  verifyJwt,
+  verifyRole(["mahasiswa"]),
+  deleteStateRegistration
+);
+
+// state manager
 router.get("/", verifyJwt, getAllState);
 router.get("/:id", verifyJwt, showState);
 router.get("/:id/peserta", showStatePeserta);
