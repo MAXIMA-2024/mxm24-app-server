@@ -33,12 +33,7 @@ export const absenState = async (req: Request, res: Response) => {
     // get the latest day according to now
     const day = await db.day.findFirst({
       where: {
-        date: {
-          lte: now,
-        },
-      },
-      orderBy: {
-        date: "desc",
+        date: start,
       },
     });
 
