@@ -12,6 +12,70 @@ import {
 
 import { absenMalpunSchema, type AbsenMalpun } from "@/models/malpun.model";
 
+export const ticketMalpunDetail = async (req: Request, res: Response) => {
+  try {
+    // code validation
+    const validateCode = await absenMalpunSchema.safeParseAsync(req.params);
+    if (!validateCode.success) {
+      return validationError(res, parseZodError(validateCode.error));
+    }
+
+    const code = validateCode.data.code;
+
+    // entry pertama
+    const absenExternal = await db.malpunExternal.findFirst({
+      where: {
+        code,
+      },
+    });
+
+    // if true (its external)
+    if (absenExternal) {
+      if (!absenExternal.transactionId || !absenExternal.validatedAt) {
+        return forbidden(
+          res,
+          "Ticket tidak valid, karena belum melakukan pembayaran atau belum validasi pembayaran"
+        );
+      }
+
+      return success(res, "Berhasil mendapatkan detail MalPun", {
+        code: absenExternal.code,
+        detail: absenExternal,
+        status: "external",
+      });
+    }
+
+    const absenInternal = await db.malpunInternal.findFirst({
+      where: {
+        code,
+      },
+      include: {
+        mahasiswa: {
+          select: {
+            nim: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    // if true (its internal)
+    if (!absenInternal) {
+      return notFound(res, "Ticket tidak ditemukan atau tidak valid");
+    }
+
+    return success(res, "Berhasil mendapatkan detail absen MalPun", {
+      code: absenInternal.code,
+      detail: absenInternal,
+      status: "internal",
+    });
+  } catch (err) {
+    logging("ERROR", `Error trying to set Absen Malpun`, err);
+    return internalServerError(res);
+  }
+};
+
 export const absenMalpun = async (req: Request, res: Response) => {
   try {
     // code validation
