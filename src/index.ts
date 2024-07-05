@@ -21,9 +21,7 @@ import organisatorRoute from "@/routes/organisator.route";
 import stateRoute from "@/routes/state.route";
 import dashboardRoute from "@/routes/dashboard.route";
 import pesertaRoute from "@/routes/peserta.route";
-
-// sementara ni bang
-import malpunRouteSementara from "@/routes/malpunSementara.route";
+import malpunRoute from "@/routes/malpun.route";
 
 const app = Express();
 
@@ -78,8 +76,7 @@ app.use("/state", stateRoute);
 app.use("/dashboard", dashboardRoute);
 app.use("/peserta", pesertaRoute);
 
-// sementara ni bang
-app.use("/malpunsementara", malpunRouteSementara);
+app.use("/malpun", malpunRoute);
 
 // [Global 404]
 app.all("*", (_req: Request, res: Response) => {
