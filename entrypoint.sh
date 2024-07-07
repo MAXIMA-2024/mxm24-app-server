@@ -13,7 +13,7 @@ if [ ! -e /$CONTAINER_FIRST_STARTUP ]; then
     
     if [ "$APP_INIT" = "true" ]; then
         echo "Running initdb script..."
-        bun run db:migrate:deploy && bun run db:seed;
+        bun run db:push && bun run db:seed;
     fi
 
     # place your script that you only want to run on first startup.
