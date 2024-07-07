@@ -58,12 +58,14 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use(Express.json());
-app.use(
-  "/public",
-  Express.static(path.join(__dirname, "../public"), {
-    extensions: ["png", "jpg", "jpeg", "webp"],
-  })
-);
+
+// disable static kita pake r2
+// app.use(
+//   "/public",
+//   Express.static(path.join(__dirname, "../public"), {
+//     extensions: ["png", "jpg", "jpeg", "webp"],
+//   })
+// );
 
 // [Routes]
 app.use(indexRoute);

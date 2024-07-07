@@ -30,6 +30,7 @@ import { idSchema } from "@/models/id.model";
 import type { UploadedFile } from "express-fileupload";
 import { nanoid } from "nanoid";
 import path from "path";
+import bucket from "@/services/r2";
 
 //me-return semua hari acara state maxima
 export const enumDay = async (req: Request, res: Response) => {
@@ -165,6 +166,9 @@ export const removeState = async (req: Request, res: Response) => {
 
     const isExist = await db.state.findFirst({
       where: { id: validate.data.id },
+      include: {
+        gallery: true,
+      },
     });
 
     if (!isExist) {
@@ -173,6 +177,18 @@ export const removeState = async (req: Request, res: Response) => {
         `STATE dengan id ${validate.data.id} tidak ditemukan`
       );
     }
+
+    // delete state logo
+    if (isExist.logo !== "-") {
+      await bucket.deleteObject(isExist.logo);
+    }
+
+    // delete state gallery
+    await Promise.all(
+      isExist.gallery.map(async (gallery) => {
+        await bucket.deleteObject(gallery.url);
+      })
+    );
 
     const state = await db.state.delete({ where: { id: validate.data.id } });
 
@@ -324,16 +340,20 @@ export const addStateLogo = async (req: Request, res: Response) => {
       return validationError(res, "Logo must be an image file");
     }
 
-    const fileName = `${state.id}.${logo.mimetype.split("/")[1]}`;
-    await logo.mv(path.join(__dirname, "../../public/state/logos/", fileName));
+    const fileName = `logo.${logo.mimetype.split("/")[1]}`;
+
+    const upload = await bucket.uploadStream(
+      logo.data,
+      `/public/state/${state.id}/${fileName}`
+    );
 
     await db.state.update({
       where: { id: state.id },
-      data: { logo: "/public/state/logos/" + fileName },
+      data: { logo: upload.objectKey },
     });
 
     return success(res, "Berhasil mengupload logo state", {
-      logo: "/public/state/logos/" + fileName,
+      logo: upload.objectKey,
     });
   } catch (err) {
     logging("ERROR", "Failed to upload state logo", err);
@@ -412,23 +432,26 @@ export const addStateGallery = async (req: Request, res: Response) => {
       return conflict(res, "Gallery STATE maksimal 5 gambar");
     }
 
+    const isMimeSafe = galleryArray.every((file) =>
+      allowedMimeTypes.includes(file.mimetype)
+    );
+    if (!isMimeSafe) {
+      return validationError(res, "All objects must be an image file");
+    }
+
     await Promise.all(
       galleryArray.map(async (file) => {
-        if (!allowedMimeTypes.includes(file.mimetype)) {
-          return validationError(res, "Gallery must be an image file");
-        }
+        const fileName = `${nanoid()}.${file.mimetype.split("/")[1]}`;
 
-        const fileName = `${state.id}-${nanoid()}.${
-          file.mimetype.split("/")[1]
-        }`;
-        await file.mv(
-          path.join(__dirname, "../../public/state/kegiatan/", fileName)
+        const upload = await bucket.uploadStream(
+          file.data,
+          `/public/state/${state.id}/gallery/${fileName}`
         );
 
         await db.stateGallery.create({
           data: {
             stateId: state.id,
-            url: "/public/state/kegiatan/" + fileName,
+            url: upload.objectKey,
           },
         });
       })
@@ -493,6 +516,9 @@ export const deleteStateGallery = async (req: Request, res: Response) => {
         `Gallery dengan id ${validateGalleryId.data} tidak ditemukan`
       );
     }
+
+    // delete file
+    await bucket.deleteObject(gallery.url);
 
     await db.stateGallery.delete({
       where: {
