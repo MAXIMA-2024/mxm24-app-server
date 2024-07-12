@@ -15,18 +15,13 @@ import {
 // Random Id
 import { nanoid } from "nanoid"; 
 
-//Model Alfagift (If needed)
+// Code Validation
 import { 
-    internalUpdatableSchema,
     codeValidationSchema,
  } from "@/models/malpun/internal.model";
 
 export const addTicketInternal = async (req: Request, res: Response) => {
     try {
-        // const validate = await internalUpdatableSchema.safeParseAsync(req.body);
-        // if (!validate.success) {
-        //     return validationError(res, parseZodError(validate.error));
-        // }
         const mahasiswa = await db.mahasiswa.findUnique({
             where: {
                 email: req.user?.data.email, 
@@ -48,7 +43,7 @@ export const addTicketInternal = async (req: Request, res: Response) => {
             data: {
                 code: `MXM24-${nanoid(16)}`,
                 mahasiswaId: mahasiswa.id,
-                // alfagiftId: req.body.alfagiftId,
+                alfagiftId: req.body.alfagiftId ? req.body.alfagiftId : null,
             }
         })
         logging("LOGS", `${mahasiswa.nim} melakukan claim ticekt`, newTicket)
