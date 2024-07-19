@@ -1,34 +1,26 @@
 import logging from "@/utils/logging";
 
-if (!Bun.env.APP_PORT) {
-  logging("WARN", "APP_PORT not set, using default 8080");
-}
+const envs = [
+  "NODE_ENV",
+  "APP_PORT",
+  "APP_JWT_SECRET",
+  "APP_JWT_REFRESH_SECRET",
+  "APP_DB_URL",
+  "APP_API_URL",
+  "APP_FRONTEND_URL",
+  "R2_ACCOUNT_ID",
+  "R2_ACCESS_KEY_ID",
+  "R2_SECRET_ACCESS_KEY",
+  "R2_BUCKET_NAME",
+  "R2_PUBLIC_URL",
+];
 
-if (!Bun.env.APP_JWT_SECRET) {
-  logging("ERROR", "APP_JWT_SECRET not set in .env");
-  process.exit(-1);
-}
-
-if (!Bun.env.APP_JWT_REFRESH_SECRET) {
-  logging("ERROR", "APP_JWT_REFRESH_SECRET not set in .env");
-  process.exit(-1);
-}
-
-if (!Bun.env.APP_DB_URL) {
-  logging("ERROR", "APP_DB_URL not set in .env");
-  process.exit(-1);
-}
-
-if (!Bun.env.APP_API_URL) {
-  logging("WARN", "APP_API_URL not set, using default http://localhost:8080");
-}
-
-if (!Bun.env.APP_FRONTEND_URL) {
-  logging(
-    "WARN",
-    "APP_FRONTEND_URL not set, using default http://localhost:5173"
-  );
-}
+envs.forEach((env) => {
+  if (!process.env[env]) {
+    logging("ERROR", `Environment variable ${env} is not defined`);
+    process.exit(1);
+  }
+});
 
 if (!Bun.env.MIDTRANS_SERVER_KEY) {
   logging("ERROR", "MIDTRANS_SERVER_KEY not set");
@@ -47,8 +39,13 @@ const ENV = {
   APP_DB_URL: Bun.env.APP_DB_URL || "mysql://root@localhost:3306/mxm24_db",
   APP_API_URL: Bun.env.APP_API_URL || "http://localhost:8080",
   APP_FRONTEND_URL: Bun.env.APP_FRONTEND_URL || "http://localhost:5173",
+  R2_ACCOUNT_ID: Bun.env.R2_ACCOUNT_ID || "R2_ACCOUNT_ID",
+  R2_ACCESS_KEY_ID: Bun.env.R2_ACCESS_KEY_ID || "R2_ACCESS_KEY_ID",
+  R2_SECRET_ACCESS_KEY: Bun.env.R2_SECRET_ACCESS_KEY || "R2_SECRET_ACCESS_KEY",
+  R2_BUCKET_NAME: Bun.env.R2_BUCKET_NAME || "R2_BUCKET_NAME",
+  R2_PUBLIC_URL: Bun.env.R2_PUBLIC_URL || "R2_PUBLIC_URL",
   MIDTRANS_SERVER_KEY: Bun.env.MIDTRANS_SERVER_KEY || "midtrans",
-  MIDTRANS_ENV: Bun.env.MIDTRANS_ENV || "sandbox",
+  MIDTRANS_ENV: Bun.env.MIDTRANS_ENV || "sandbox"
 };
 
 export default ENV;

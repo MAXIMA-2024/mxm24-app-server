@@ -20,14 +20,15 @@ import panitiaRoute from "@/routes/panitia.route";
 import organisatorRoute from "@/routes/organisator.route";
 import stateRoute from "@/routes/state.route";
 import dashboardRoute from "@/routes/dashboard.route";
+import pesertaRoute from "@/routes/peserta.route";
 import malpunRoute from "@/routes/malpun.route";
 
 const app = Express();
 
 // [CORS]
 const allowedOrigins = [
-  "https://internal.maximaumn.com",
-  "https://maximaumn.com",
+  "https://internal.maximaumn.id",
+  "https://maximaumn.id",
   "https://maxima.umn.ac.id",
   "https://localhost:5173", // development client
 ];
@@ -57,12 +58,14 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use(Express.json());
-app.use(
-  "/public",
-  Express.static(path.join(__dirname, "../public"), {
-    extensions: ["png", "jpg", "jpeg", "webp"],
-  })
-);
+
+// disable static kita pake r2
+// app.use(
+//   "/public",
+//   Express.static(path.join(__dirname, "../public"), {
+//     extensions: ["png", "jpg", "jpeg", "webp"],
+//   })
+// );
 
 // [Routes]
 app.use(indexRoute);
@@ -73,6 +76,7 @@ app.use("/panitia", panitiaRoute);
 app.use("/organisator", organisatorRoute);
 app.use("/state", stateRoute);
 app.use("/dashboard", dashboardRoute);
+app.use("/peserta", pesertaRoute);
 app.use("/malpun", malpunRoute);
 
 // [Global 404]
