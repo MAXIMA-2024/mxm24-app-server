@@ -77,6 +77,7 @@ app.use("/organisator", organisatorRoute);
 app.use("/state", stateRoute);
 app.use("/dashboard", dashboardRoute);
 app.use("/peserta", pesertaRoute);
+app.use("/malpun", malpunRoute);
 
 app.use("/malpun", malpunRoute);
 
