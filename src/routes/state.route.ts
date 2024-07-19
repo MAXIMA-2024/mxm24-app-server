@@ -29,8 +29,10 @@ import {
   deleteStateRegistration,
 } from "@/controllers/state.registration.controller";
 
-import { absenState } from "@/controllers/state.absen.controller";
-
+import {
+  absenState,
+  absenStateDetail,
+} from "@/controllers/state.absen.controller";
 
 import fileUpload from "express-fileupload";
 import { badRequest } from "@/utils/responses";
@@ -40,7 +42,6 @@ const router = Router();
 // enums
 router.get("/enum/dayManagement", enumDay);
 router.get("/enum/organisator", enumOrganisator);
-
 
 // state registration
 router.get(
@@ -63,6 +64,14 @@ router.delete(
 );
 
 //absen route
+router.get(
+  "/absen/:token",
+  verifyJwt,
+  verifyRole(["panitia"]),
+  verifyDivisiPanitia([1, 2, 3, 4]),
+  absenStateDetail
+);
+
 router.put(
   "/absen",
   verifyJwt,

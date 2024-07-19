@@ -54,7 +54,11 @@ export const mahasiswaUpdatableSchema = mahasiswaSchema.pick({
 });
 
 export const tokenValidationSchema = z.object({
-  token: z.string().startsWith("MXM24-"),
+  token: z
+    .string()
+    .startsWith("MXM24-", "Invalid token signature")
+    // MXM24-nanoid10
+    .length(16, "Invalid token length"),
 });
 
 export type Mahasiswa = z.infer<typeof mahasiswaSchema>;

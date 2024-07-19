@@ -1,0 +1,10 @@
+services:
+   server:
+      build:
+         dockerfile: Dockerfile
+      image: maxima24/app-server:v1
+      container_name: "mxm24-app-server"
+      ports:
+         - 8080:8080
+      restart: always
+      env_file: ".env"
