@@ -11,7 +11,10 @@ export const internalSchema = z.object({
   mahasiswaId: idSchema,
   attendance: z.boolean({ required_error: "Attendance can't be empty" }),
   attendanceTime: z.date(),
-  alfagiftId: z.string().nullable(),
+  alfagiftId: z
+    .string()
+    .length(16, "Invalid Alfagift ID length")
+    .startsWith("99900", "Invalid Alfagift ID"),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
