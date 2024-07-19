@@ -117,6 +117,7 @@ export const showStatePeserta = async (req: Request, res: Response) => {
             nim: true,
             name: true,
             email: true,
+            token: true,
           },
         },
       },

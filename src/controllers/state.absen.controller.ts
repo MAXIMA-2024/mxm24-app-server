@@ -170,6 +170,11 @@ export const absenStateDetail = async (req: Request, res: Response) => {
             name: true,
           },
         },
+        state: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 

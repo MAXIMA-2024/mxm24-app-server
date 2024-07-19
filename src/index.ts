@@ -27,8 +27,8 @@ const app = Express();
 
 // [CORS]
 const allowedOrigins = [
-  "https://internal.maximaumn.com",
-  "https://maximaumn.com",
+  "https://internal.maximaumn.id",
+  "https://maximaumn.id",
   "https://maxima.umn.ac.id",
   "https://localhost:5173", // development client
 ];
@@ -77,6 +77,7 @@ app.use("/organisator", organisatorRoute);
 app.use("/state", stateRoute);
 app.use("/dashboard", dashboardRoute);
 app.use("/peserta", pesertaRoute);
+app.use("/malpun", malpunRoute);
 
 app.use("/malpun", malpunRoute);
 

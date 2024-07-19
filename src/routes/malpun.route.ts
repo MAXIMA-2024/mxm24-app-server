@@ -6,6 +6,10 @@ import {
   absenMalpun,
   ticketMalpunDetail,
 } from "@/controllers/malpun.controller";
+import {
+  addTicketInternal,
+  getTicketInternal,
+} from "@/controllers/malpun.internal.controller";
 
 const router = Router();
 
@@ -20,5 +24,15 @@ router.put(
   verifyDivisiPanitia([1, 2, 3, 4]),
   absenMalpun
 );
+
+// Route Internal
+router.post(
+  "/internal",
+  verifyJwt,
+  verifyRole(["mahasiswa"]),
+  addTicketInternal
+);
+router.get("/internal", getTicketInternal);
+
 
 export default router;
