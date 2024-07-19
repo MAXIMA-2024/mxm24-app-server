@@ -10,6 +10,10 @@ import {
   addTicketInternal,
   getTicketInternal,
 } from "@/controllers/malpun.internal.controller";
+import {
+  addAccountExternal,
+  midtransCallback,
+} from "@/controllers/malpun.controller";
 
 const router = Router();
 
@@ -32,7 +36,15 @@ router.post(
   verifyRole(["mahasiswa"]),
   addTicketInternal
 );
-router.get("/internal", getTicketInternal);
+router.get(
+  "/internal",
+  verifyJwt,
+  verifyRole(["mahasiswa"]),
+  getTicketInternal,
+);
 
+// Route External
+router.post("/external", addAccountExternal); //route malpun external
+router.post("/external/callback", midtransCallback); //route malpun external
 
 export default router;
