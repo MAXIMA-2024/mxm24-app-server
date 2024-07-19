@@ -30,6 +30,15 @@ if (!Bun.env.APP_FRONTEND_URL) {
   );
 }
 
+if (!Bun.env.MIDTRANS_SERVER_KEY) {
+  logging("ERROR", "MIDTRANS_SERVER_KEY not set");
+  process.exit(-1);
+}
+
+if (!Bun.env.MIDTRANS_ENV) {
+  logging("WARN", "MIDTRANS_ENV not set, using default sandbox");
+}
+
 const ENV = {
   NODE_ENV: Bun.env.NODE_ENV || "development",
   APP_PORT: Number(Bun.env.APP_PORT) || 8080,
@@ -38,6 +47,8 @@ const ENV = {
   APP_DB_URL: Bun.env.APP_DB_URL || "mysql://root@localhost:3306/mxm24_db",
   APP_API_URL: Bun.env.APP_API_URL || "http://localhost:8080",
   APP_FRONTEND_URL: Bun.env.APP_FRONTEND_URL || "http://localhost:5173",
+  MIDTRANS_SERVER_KEY: Bun.env.MIDTRANS_SERVER_KEY || "midtrans",
+  MIDTRANS_ENV: Bun.env.MIDTRANS_ENV || "sandbox",
 };
 
 export default ENV;
