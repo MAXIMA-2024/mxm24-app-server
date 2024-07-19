@@ -10,6 +10,7 @@ import {
   notFound,
   success,
   badRequest,
+  forbidden,
 } from "@/utils/responses";
 
 import { nanoid } from "nanoid"; //generate random id
@@ -109,8 +110,8 @@ export const midtransCallback = async (
     return success(res, "Pembayaran sedang dalam status pending", account);
   } catch (err) {
     internalServerError(res);
+  }
 };
-
 
 export const ticketMalpunDetail = async (req: Request, res: Response) => {
   try {

@@ -40,7 +40,7 @@ router.get(
   "/internal",
   verifyJwt,
   verifyRole(["mahasiswa"]),
-  getTicketInternal,
+  getTicketInternal
 );
 
 // Route External
