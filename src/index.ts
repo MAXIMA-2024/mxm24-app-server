@@ -79,8 +79,6 @@ app.use("/dashboard", dashboardRoute);
 app.use("/peserta", pesertaRoute);
 app.use("/malpun", malpunRoute);
 
-app.use("/malpun", malpunRoute);
-
 // [Global 404]
 app.all("*", (_req: Request, res: Response) => {
   return notFound(res, "Route not found");
