@@ -10,6 +10,7 @@ import {
   getSingleMahasiswa,
   updateMahasiswa,
 } from "@/controllers/peserta.controller";
+import { DivisiPanitia } from "@/models/divisiPanitia.model";
 
 const router = Router();
 
@@ -36,14 +37,26 @@ router.put(
 
     pr disini gue masukkin biar mandiri :) jadi kalo ada laporan salah input nama/nim/segala macem, mereka bisa fix sendiri
   */
-  verifyDivisiPanitia([1, 2, 3, 4, 13]),
+  verifyDivisiPanitia([
+    DivisiPanitia.NOVATOR,
+    DivisiPanitia.CHARTA,
+    DivisiPanitia.ACTUS,
+    DivisiPanitia.SCRIPTUM,
+    DivisiPanitia.EPISTULA,
+  ]),
   updateMahasiswa
 );
 router.delete(
   "/mahasiswa/:id",
   verifyJwt,
   verifyRole(["panitia"]),
-  verifyDivisiPanitia([1, 2, 3, 4, 13]),
+  verifyDivisiPanitia([
+    DivisiPanitia.NOVATOR,
+    DivisiPanitia.CHARTA,
+    DivisiPanitia.ACTUS,
+    DivisiPanitia.SCRIPTUM,
+    DivisiPanitia.EPISTULA,
+  ]),
   deleteMahasiswa
 );
 

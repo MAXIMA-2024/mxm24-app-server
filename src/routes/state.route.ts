@@ -36,6 +36,7 @@ import {
 
 import fileUpload from "express-fileupload";
 import { badRequest } from "@/utils/responses";
+import { DivisiPanitia } from "@/models/divisiPanitia.model";
 
 const router = Router();
 
@@ -68,7 +69,12 @@ router.get(
   "/absen/:token",
   verifyJwt,
   verifyRole(["panitia"]),
-  verifyDivisiPanitia([1, 2, 3, 4]),
+  verifyDivisiPanitia([
+    DivisiPanitia.NOVATOR,
+    DivisiPanitia.CHARTA,
+    DivisiPanitia.ACTUS,
+    DivisiPanitia.SCRIPTUM,
+  ]),
   absenStateDetail
 );
 
@@ -76,7 +82,12 @@ router.put(
   "/absen",
   verifyJwt,
   verifyRole(["panitia"]),
-  verifyDivisiPanitia([1, 2, 3, 4]),
+  verifyDivisiPanitia([
+    DivisiPanitia.NOVATOR,
+    DivisiPanitia.CHARTA,
+    DivisiPanitia.ACTUS,
+    DivisiPanitia.SCRIPTUM,
+  ]),
   absenState
 );
 
@@ -88,14 +99,25 @@ router.post(
   "/",
   verifyJwt,
   verifyRole(["panitia"]),
-  verifyDivisiPanitia([1, 2, 3, 4]),
+  verifyDivisiPanitia([
+    DivisiPanitia.NOVATOR,
+    DivisiPanitia.CHARTA,
+    DivisiPanitia.ACTUS,
+    DivisiPanitia.SCRIPTUM,
+  ]),
   addState
 );
 router.delete(
   "/:id",
   verifyJwt,
   verifyRole(["panitia"]),
-  verifyDivisiPanitia([1, 2, 3, 4]),
+  verifyDivisiPanitia([
+    DivisiPanitia.NOVATOR,
+    DivisiPanitia.CHARTA,
+    DivisiPanitia.ACTUS,
+    DivisiPanitia.SCRIPTUM,
+    4,
+  ]),
   removeState
 );
 router.put(

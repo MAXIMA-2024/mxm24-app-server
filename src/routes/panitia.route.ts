@@ -9,6 +9,7 @@ import {
   deletePanitia,
   enumDivisiPanitia,
 } from "@/controllers/panitia.controller";
+import { DivisiPanitia } from "@/models/divisiPanitia.model";
 
 const router = Router();
 
@@ -18,14 +19,14 @@ router.put(
   "/:id",
   verifyJwt,
   verifyRole(["panitia"]),
-  verifyDivisiPanitia([1, 2]),
+  verifyDivisiPanitia([DivisiPanitia.NOVATOR, DivisiPanitia.CHARTA]),
   updatePanitia
 );
 router.delete(
   "/:id",
   verifyJwt,
   verifyRole(["panitia"]),
-  verifyDivisiPanitia([1, 2]),
+  verifyDivisiPanitia([DivisiPanitia.NOVATOR, DivisiPanitia.CHARTA]),
   deletePanitia
 );
 router.get("/enum/divisiPanitia", enumDivisiPanitia);

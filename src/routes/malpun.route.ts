@@ -14,6 +14,7 @@ import {
   addAccountExternal,
   midtransCallback,
 } from "@/controllers/malpun.controller";
+import { DivisiPanitia } from "@/models/divisiPanitia.model";
 
 const router = Router();
 
@@ -25,7 +26,12 @@ router.put(
   "/absen",
   verifyJwt,
   verifyRole(["panitia"]),
-  verifyDivisiPanitia([1, 2, 3, 4]),
+  verifyDivisiPanitia([
+    DivisiPanitia.NOVATOR,
+    DivisiPanitia.CHARTA,
+    DivisiPanitia.ACTUS,
+    DivisiPanitia.SCRIPTUM,
+  ]),
   absenMalpun
 );
 

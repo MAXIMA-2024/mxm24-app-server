@@ -1,3 +1,4 @@
+import type { DivisiPanitia } from "@/models/divisiPanitia.model";
 import db from "@/services/db";
 import { forbidden } from "@/utils/responses";
 import type { Request, Response, NextFunction } from "express";
@@ -8,7 +9,7 @@ import type { Request, Response, NextFunction } from "express";
  * @returns The middleware function that checks if the user has access to the specified division(s).
  */
 const verifyDivisiPanitia =
-  (divisiIds: number[]) =>
+  (divisiIds: DivisiPanitia[]) =>
   async (req: Request, res: Response, next: NextFunction) => {
     if (req.user?.role !== "panitia") {
       return forbidden(res, `You don't have access to this feature`);

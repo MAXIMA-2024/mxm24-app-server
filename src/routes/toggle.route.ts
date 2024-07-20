@@ -11,6 +11,7 @@ import {
 import verifyJwt from "@/middlewares/verifyJwt.middleware";
 import verifyRole from "@/middlewares/verifyRole.middleware";
 import verifyDivisiPanitia from "@/middlewares/verifyDivisiPanitia.middleware";
+import { DivisiPanitia } from "@/models/divisiPanitia.model";
 
 const router = Router();
 
@@ -21,21 +22,21 @@ router.post(
   "/",
   verifyJwt,
   verifyRole(["panitia"]),
-  verifyDivisiPanitia([1, 2]),
+  verifyDivisiPanitia([DivisiPanitia.NOVATOR, DivisiPanitia.CHARTA]),
   createToggle
 );
 router.put(
   "/:id",
   verifyJwt,
   verifyRole(["panitia"]),
-  verifyDivisiPanitia([1, 2]),
+  verifyDivisiPanitia([DivisiPanitia.NOVATOR, DivisiPanitia.CHARTA]),
   toggleToggle
 );
 router.delete(
   "/:id",
   verifyJwt,
   verifyRole(["panitia"]),
-  verifyDivisiPanitia([1, 2]),
+  verifyDivisiPanitia([DivisiPanitia.NOVATOR, DivisiPanitia.CHARTA]),
   deleteToggle
 );
 
