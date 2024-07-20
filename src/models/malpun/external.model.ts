@@ -22,18 +22,11 @@ export const externalUpdatableSchema = externalSchema.pick({
   email: true,
 });
 
-export type MidtransCallback = {
-  status_code: string;
-  status_message: string;
-  transaction_id: string;
-  masked_card: string;
-  order_id: string;
-  gross_amount: string;
-  payment_type: string;
-  transaction_time: string;
-  transaction_status: string;
-  fraud_status: string;
-  approval_code: string;
-  bank: string;
-  card_type: string;
-};
+export const midtransCallbackSchema = z.object({
+  transaction_status: z.string(),
+  transaction_id: z.string(),
+  order_id: z.string(),
+  transaction_time: z.string(),
+});
+
+export type MidtransCallback = z.infer<typeof midtransCallbackSchema>;
