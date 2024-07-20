@@ -30,6 +30,8 @@ const allowedOrigins = [
   "https://internal.maximaumn.id",
   "https://maximaumn.id",
   "https://maxima.umn.ac.id",
+  "https://orion.maximaumn.id", // internal
+  "https://sirius.maximaumn.id", // client
   "https://localhost:5173", // development client
 ];
 
