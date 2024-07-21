@@ -16,7 +16,10 @@ import {
 import { nanoid } from "nanoid"; //generate random id
 
 //model schema
-import { externalUpdatableSchema } from "@/models/malpun/external.model";
+import {
+  externalUpdatableSchema,
+  midtransCallbackSchema,
+} from "@/models/malpun/external.model";
 import { absenMalpunSchema, type AbsenMalpun } from "@/models/malpun.model";
 
 import ENV from "@/utils/env";
@@ -82,26 +85,26 @@ export const addAccountExternal = async (req: Request, res: Response) => {
 };
 
 // midtrans callback
-export const midtransCallback = async (
-  req: Request<{}, {}, MidtransCallback>,
-  res: Response
-) => {
+export const midtransCallback = async (req: Request, res: Response) => {
   try {
-    const { transaction_status, transaction_id, order_id, transaction_time } =
-      req.body;
+    const validate = await midtransCallbackSchema.safeParseAsync(req.body);
+    if (!validate.success) {
+      return validationError(res, parseZodError(validate.error));
+    }
+
     const account = await db.malpunExternal.findFirst({
-      where: { code: order_id },
+      where: { code: validate.data.order_id },
     });
     if (!account) {
       return notFound(res, "order not found");
     }
 
-    if (transaction_status == "settlement") {
+    if (validate.data.transaction_status == "settlement") {
       const updatedAccount = await db.malpunExternal.update({
         where: { id: account.id },
         data: {
-          transactionId: transaction_id,
-          validatedAt: new Date(transaction_time),
+          transactionId: validate.data.transaction_id,
+          validatedAt: new Date(validate.data.transaction_time),
         },
       });
       return success(res, "transaction succeed", updatedAccount);

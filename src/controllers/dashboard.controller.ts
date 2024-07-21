@@ -19,7 +19,18 @@ export const dashboardStatistics = async (req: Request, res: Response) => {
 
     const state = await db.stateRegistration.count();
 
-    const malpun = "TO-DO";
+    const malpun =
+      (await db.malpunInternal.count()) +
+      (await db.malpunExternal.count({
+        where: {
+          transactionId: {
+            not: null,
+          },
+          validatedAt: {
+            not: null,
+          },
+        },
+      }));
 
     const data = { panitia, mahasiswa, organisator, state, malpun };
 
