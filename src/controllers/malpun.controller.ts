@@ -24,6 +24,11 @@ import { absenMalpunSchema, type AbsenMalpun } from "@/models/malpun.model";
 
 import ENV from "@/utils/env";
 
+const API_URL =
+  ENV.MIDTRANS_ENV == "sandbox"
+    ? "https://app.sandbox.midtrans.com/snap/v1/transactions"
+    : "https://app.midtrans.com/snap/v1/transactions";
+
 //POST Method
 //menambah account untuk pendaftaran malpun external
 export const addAccountExternal = async (req: Request, res: Response) => {
@@ -35,10 +40,6 @@ export const addAccountExternal = async (req: Request, res: Response) => {
 
     const token = `MXM24-${nanoid(16)}`;
 
-    const API_URL =
-      ENV.MIDTRANS_ENV == "sandbox"
-        ? "https://app.sandbox.midtrans.com/snap/v1/transactions"
-        : "https://app.midtrans.com/snap/v1/transactions";
     const resp = await fetch(API_URL, {
       method: "POST",
       headers: {
@@ -92,6 +93,8 @@ export const midtransCallback = async (req: Request, res: Response) => {
       return validationError(res, parseZodError(validate.error));
     }
 
+    // !todo: validasi ke midtrans dlu
+
     const account = await db.malpunExternal.findFirst({
       where: { code: validate.data.order_id },
     });
@@ -107,6 +110,25 @@ export const midtransCallback = async (req: Request, res: Response) => {
           validatedAt: new Date(validate.data.transaction_time),
         },
       });
+
+      // send email
+      const resp = await fetch(`${ENV.APP_MQ_URL}/malpun/external`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: updatedAccount.id,
+        }),
+      });
+
+      if (resp.status !== 200) {
+        logging(
+          "LOGS",
+          `Failed to send Malpun purchase email for user id: ${updatedAccount.id}`
+        );
+      }
+
       return success(res, "transaction succeed", updatedAccount);
     }
 
