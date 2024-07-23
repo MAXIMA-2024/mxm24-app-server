@@ -26,6 +26,7 @@ import {
 import { absenMalpunSchema, type AbsenMalpun } from "@/models/malpun.model";
 
 import ENV from "@/utils/env";
+import { verifyCaptcha } from "@/services/turnstile";
 
 const API_URL =
   ENV.MIDTRANS_ENV == "sandbox"
@@ -39,6 +40,16 @@ export const addAccountExternal = async (req: Request, res: Response) => {
     const validate = await externalUpdatableSchema.safeParseAsync(req.body);
     if (!validate.success) {
       return validationError(res, parseZodError(validate.error));
+    }
+
+    const ip = req.headers["CF-Connecting-IP"] as string;
+    const turnstileValidation = await verifyCaptcha(
+      validate.data.turnstileToken,
+      ip
+    );
+
+    if (!turnstileValidation) {
+      return validationError(res, "Captcha validation failed");
     }
 
     const token = `MXM24-${nanoid(16)}`;

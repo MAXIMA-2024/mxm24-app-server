@@ -14,11 +14,13 @@ export const externalSchema = z.object({
   attendanceTime: z.date(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  turnstileToken: z.string(),
 });
 
 export const externalUpdatableSchema = externalSchema.pick({
   fullName: true,
   email: true,
+  turnstileToken: true,
 });
 
 export const midtransCallbackSchema = z.object({
