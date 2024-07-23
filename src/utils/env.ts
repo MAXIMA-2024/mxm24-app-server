@@ -14,23 +14,17 @@ const envs = [
   "R2_SECRET_ACCESS_KEY",
   "R2_BUCKET_NAME",
   "R2_PUBLIC_URL",
+  "MIDTRANS_SERVER_KEY",
+  "MIDTRANS_ENV",
+  "TURNSTILE_SECRET_KEY",
 ];
 
 envs.forEach((env) => {
-  if (!process.env[env]) {
+  if (!Bun.env[env]) {
     logging("ERROR", `Environment variable ${env} is not defined`);
-    process.exit(1);
+    process.exit(-1);
   }
 });
-
-if (!Bun.env.MIDTRANS_SERVER_KEY) {
-  logging("ERROR", "MIDTRANS_SERVER_KEY not set");
-  process.exit(-1);
-}
-
-if (!Bun.env.MIDTRANS_ENV) {
-  logging("WARN", "MIDTRANS_ENV not set, using default sandbox");
-}
 
 const ENV = {
   NODE_ENV: Bun.env.NODE_ENV || "development",
@@ -46,6 +40,7 @@ const ENV = {
   R2_SECRET_ACCESS_KEY: Bun.env.R2_SECRET_ACCESS_KEY || "R2_SECRET_ACCESS_KEY",
   R2_BUCKET_NAME: Bun.env.R2_BUCKET_NAME || "R2_BUCKET_NAME",
   R2_PUBLIC_URL: Bun.env.R2_PUBLIC_URL || "R2_PUBLIC_URL",
+  TURNSTILE_SECRET_KEY: Bun.env.TURNSTILE_SECRET_KEY || "TURNSTILE",
   MIDTRANS_SERVER_KEY: Bun.env.MIDTRANS_SERVER_KEY || "midtrans",
   MIDTRANS_ENV: Bun.env.MIDTRANS_ENV || "sandbox",
 };
