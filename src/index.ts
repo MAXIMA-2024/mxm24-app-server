@@ -39,25 +39,10 @@ const allowedOrigins = [
 app.use(cookieParser());
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: allowedOrigins,
     credentials: true, // Allow credentials to be sent with requests
   })
 );
-
-// [Error handler untuk cors]
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  if (err) {
-    return badRequest(res, err.message);
-  }
-
-  next();
-});
 
 app.use(Express.json());
 
