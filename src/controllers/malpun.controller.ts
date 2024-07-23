@@ -1,5 +1,8 @@
 import { response, type Request, type Response } from "express";
-import type { MidtransCallback } from "@/models/malpun/external.model";
+import type {
+  MidtransCallback,
+  MidtransStatus,
+} from "@/models/malpun/external.model";
 import logging from "@/utils/logging";
 import db from "@/services/db";
 import {
@@ -85,6 +88,11 @@ export const addAccountExternal = async (req: Request, res: Response) => {
   }
 };
 
+const API_VALIDATION_URL =
+  ENV.MIDTRANS_ENV === "sandbox"
+    ? "https://api.sandbox.midtrans.com/v2"
+    : "https://api.midtrans.com/v2";
+
 // midtrans callback
 export const midtransCallback = async (req: Request, res: Response) => {
   try {
@@ -93,7 +101,23 @@ export const midtransCallback = async (req: Request, res: Response) => {
       return validationError(res, parseZodError(validate.error));
     }
 
-    // !todo: validasi ke midtrans dlu
+    // validate midtrans transaction
+    const resp = await fetch(
+      `${API_VALIDATION_URL}/${validate.data.order_id}/status`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Basic ${btoa(ENV.MIDTRANS_SERVER_KEY + ":")}`,
+          Accept: "application/json",
+        },
+      }
+    );
+
+    const mtData = (await resp.json()) as MidtransStatus;
+
+    if (mtData.status_code === "404") {
+      return notFound(res, "Invalid Midtrans transaction id");
+    }
 
     const account = await db.malpunExternal.findFirst({
       where: { code: validate.data.order_id },
@@ -102,7 +126,7 @@ export const midtransCallback = async (req: Request, res: Response) => {
       return notFound(res, "order not found");
     }
 
-    if (validate.data.transaction_status == "settlement") {
+    if (mtData.transaction_status == "settlement") {
       const updatedAccount = await db.malpunExternal.update({
         where: { id: account.id },
         data: {

@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { idSchema } from "../id.model";
-import { midtransCallback } from "@/controllers/malpun.controller";
 
 export const externalSchema = z.object({
   id: idSchema,
@@ -30,3 +29,31 @@ export const midtransCallbackSchema = z.object({
 });
 
 export type MidtransCallback = z.infer<typeof midtransCallbackSchema>;
+
+export type MidtransStatus = {
+  status_code: string;
+  status_message: string;
+  transaction_id: string;
+  masked_card: string;
+  order_id: string;
+  payment_type: string;
+  transaction_time: string;
+  transaction_status:
+    | "capture"
+    | "settlement"
+    | "pending"
+    | "deny"
+    | "cancel"
+    | "expire";
+  fraud_status: "accept" | "challenge" | "deny";
+  approval_code: string;
+  signature_key: string;
+  bank: string;
+  gross_amount: string;
+  channel_response_code: string;
+  channel_response_message: string;
+  card_type: string;
+  payment_option_type: string;
+  shopeepay_reference_number: string;
+  reference_id: string;
+};
