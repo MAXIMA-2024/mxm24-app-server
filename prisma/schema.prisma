@@ -126,6 +126,7 @@ model Panitia {
   isVerified Boolean       @default(false)
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
+  Mail       Mail[]
 }
 
 model Organisator {
@@ -138,6 +139,7 @@ model Organisator {
   isVerified Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  Mail       Mail[]
 }
 
 model Mahasiswa {
@@ -177,6 +179,8 @@ model Logs {
 
 enum MailCategory {
   WELCOME
+  INTERNAL_WELCOME
+  INTERNAL_VERIFICATION
   STATE_REMINDER
   MALPUN_INTERNAL
   MALPUN_EXTERNAL
@@ -197,6 +201,13 @@ model Mail {
   // malpun external
   buyer            MalpunExternal? @relation(fields: [malpunExternalId], references: [id])
   malpunExternalId Int?
+
+  // internal
+  panitia   Panitia? @relation(fields: [panitiaId], references: [id])
+  panitiaId Int?
+
+  organisator   Organisator? @relation(fields: [organisatorId], references: [id])
+  organisatorId Int?
 
   // status
   sentAt DateTime?

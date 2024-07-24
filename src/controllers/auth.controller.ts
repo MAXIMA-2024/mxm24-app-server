@@ -557,6 +557,27 @@ export const onboarding = async (
         },
       });
 
+      const resp = await fetch(
+        `${ENV.APP_MQ_URL}/welcome/internal/organisator`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: newOrganisator.id,
+          }),
+        }
+      );
+
+      if (resp.status !== 200) {
+        logging(
+          "LOGS",
+          `Failed to send welcoming email to queue for organisator id: ${newOrganisator.id}`
+        );
+        // logging error aja, biarin tetep bisa masuk
+      }
+
       const jwtToken = jwt.sign(
         {
           email: newOrganisator.email,
@@ -603,6 +624,24 @@ export const onboarding = async (
           divisiId: undefined,
         },
       });
+
+      const resp = await fetch(`${ENV.APP_MQ_URL}/welcome/internal/panitia`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: newPanitia.id,
+        }),
+      });
+
+      if (resp.status !== 200) {
+        logging(
+          "LOGS",
+          `Failed to send welcoming email to queue for panitia id: ${newPanitia.id}`
+        );
+        // logging error aja, biarin tetep bisa masuk
+      }
 
       const jwtToken = jwt.sign(
         {
