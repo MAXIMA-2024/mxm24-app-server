@@ -20,6 +20,7 @@ import {
   codeValidationSchema,
   internalUpdatableSchema,
 } from "@/models/malpun/internal.model";
+import ENV from "@/utils/env";
 
 export const addTicketInternal = async (req: Request, res: Response) => {
   try {
@@ -52,6 +53,25 @@ export const addTicketInternal = async (req: Request, res: Response) => {
         alfagiftId: validate.data.alfagiftId,
       },
     });
+
+    // send email
+    const resp = await fetch(`${ENV.APP_MQ_URL}/malpun/internal`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: newTicket.id,
+      }),
+    });
+
+    if (resp.status !== 200) {
+      logging(
+        "LOGS",
+        `Failed to send Malpun claim internal email for user id: ${newTicket.id}`
+      );
+    }
+
     logging("LOGS", `${mahasiswa.nim} melakukan claim ticekt`, newTicket);
     return created(res, "Ticket berhasil di claim", newTicket);
   } catch (err) {

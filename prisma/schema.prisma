@@ -63,6 +63,7 @@ model StateRegistration {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Mail      Mail[]
 }
 
 // [MalPun]
@@ -95,6 +96,7 @@ model MalpunExternal {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Mail      Mail[]
 }
 
 // [Toggle]
@@ -124,6 +126,7 @@ model Panitia {
   isVerified Boolean       @default(false)
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
+  Mail       Mail[]
 }
 
 model Organisator {
@@ -136,6 +139,7 @@ model Organisator {
   isVerified Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  Mail       Mail[]
 }
 
 model Mahasiswa {
@@ -160,6 +164,7 @@ model Mahasiswa {
   updatedAt         DateTime            @updatedAt
   StateRegistration StateRegistration[]
   MalpunInternal    MalpunInternal[]
+  Mail              Mail[]
 }
 
 // !TODO: model akun external
@@ -168,4 +173,42 @@ model Logs {
   id        Int      @id @default(autoincrement())
   action    String
   timestamp DateTime @default(now())
+}
+
+// [Mail]
+
+enum MailCategory {
+  WELCOME
+  INTERNAL_WELCOME
+  INTERNAL_VERIFICATION
+  STATE_REMINDER
+  MALPUN_INTERNAL
+  MALPUN_EXTERNAL
+}
+
+model Mail {
+  id       Int          @id @default(autoincrement())
+  category MailCategory
+
+  // welcome, malpun internal
+  mahasiswa   Mahasiswa? @relation(fields: [mahasiswaId], references: [id])
+  mahasiswaId Int?
+
+  // state reminder
+  stateRegistration   StateRegistration? @relation(fields: [stateRegistrationId], references: [id])
+  stateRegistrationId Int?
+
+  // malpun external
+  buyer            MalpunExternal? @relation(fields: [malpunExternalId], references: [id])
+  malpunExternalId Int?
+
+  // internal
+  panitia   Panitia? @relation(fields: [panitiaId], references: [id])
+  panitiaId Int?
+
+  organisator   Organisator? @relation(fields: [organisatorId], references: [id])
+  organisatorId Int?
+
+  // status
+  sentAt DateTime?
 }

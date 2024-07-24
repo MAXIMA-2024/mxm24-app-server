@@ -9,6 +9,7 @@ import {
   parseZodError,
 } from "@/utils/responses";
 import { verifikasiSchema, type Verifikasi } from "@/models/verifikasi.model";
+import ENV from "@/utils/env";
 
 export const dataVerifikasi = async (req: Request, res: Response) => {
   try {
@@ -94,12 +95,32 @@ export const verifikasi = async (
           isVerified: !panitia.isVerified,
         },
         select: {
+          id: true,
           nim: true,
           isVerified: true,
         },
       });
 
       if (updatedPanitia.isVerified) {
+        // mail
+        const resp = await fetch(ENV.APP_MQ_URL + "/internal/verification", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            role: "panitia",
+            id: updatedPanitia.id,
+          }),
+        });
+
+        if (!resp.ok) {
+          logging(
+            "ERROR",
+            `Failed to send verification mail for panitia id: ${updatedPanitia.id}`
+          );
+        }
+
         logging(
           "LOGS",
           `Panitia with nim ${nimSender} verified the panitia with nim ${updatedPanitia.nim}`
@@ -144,12 +165,31 @@ export const verifikasi = async (
         isVerified: !organisator.isVerified,
       },
       select: {
+        id: true,
         nim: true,
         isVerified: true,
       },
     });
 
     if (updatedOrganisator.isVerified) {
+      const resp = await fetch(ENV.APP_MQ_URL + "/internal/verification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          role: "organisator",
+          id: updatedOrganisator.id,
+        }),
+      });
+
+      if (!resp.ok) {
+        logging(
+          "ERROR",
+          `Failed to send verification mail for organisator id: ${updatedOrganisator.id}`
+        );
+      }
+
       logging(
         "LOGS",
         `Panitia with nim ${nimSender} verified the Organisator with nim ${updatedOrganisator.nim}`
