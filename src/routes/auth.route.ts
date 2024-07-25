@@ -6,11 +6,15 @@ import {
   logout,
   profile,
   onboarding,
+  organisatorLoginCode,
 } from "@/controllers/auth.controller";
 
 import verifyJwt from "@/middlewares/verifyJwt.middleware";
 
 const router = Router();
+
+// login via unique-code
+router.post("/login-code", organisatorLoginCode);
 
 router.post("/sso", ssoCallback);
 router.get("/refresh", refresh);
