@@ -29,6 +29,7 @@ export const dataVerifikasi = async (req: Request, res: Response) => {
         id: true,
         nim: true,
         name: true,
+        email: true,
         state: {
           select: {
             name: true,
