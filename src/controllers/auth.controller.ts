@@ -23,6 +23,7 @@ import {
   badRequest,
   unauthorized,
   success,
+  notFound,
 } from "@/utils/responses";
 import type { JWTModel, JWTRefreshModel } from "@/models/auth/jwt.model";
 import {
@@ -33,6 +34,8 @@ import {
   mahasiswaUpdatableSchema,
   type MahasiswaUpdatable,
 } from "@/models/accounts/mahasiswa.model";
+import { uniqueCodeSchema } from "@/models/auth/unique-code.model";
+import { verifyCaptcha } from "@/services/turnstile";
 
 export const ssoCallback = async (
   req: Request<{}, {}, SSOModel>,
@@ -666,6 +669,82 @@ export const onboarding = async (
     }
   } catch (err) {
     logging("ERROR", "Error while trying onboard user", err);
+    return internalServerError(res);
+  }
+};
+
+export const organisatorLoginCode = async (req: Request, res: Response) => {
+  try {
+    const validate = await uniqueCodeSchema.safeParseAsync(req.body);
+
+    if (!validate.success) {
+      return validationError(res, parseZodError(validate.error));
+    }
+
+    const ip = req.headers["CF-Connecting-IP"] as string;
+
+    const validateTurnstile = await verifyCaptcha(
+      validate.data.turnstileToken,
+      ip
+    );
+
+    if (!validateTurnstile) {
+      return badRequest(res, "Invalid captcha token");
+    }
+
+    const organisator = await db.organisator.findFirst({
+      where: {
+        uniqueCode: validate.data.uniqueCode,
+      },
+    });
+
+    if (!organisator) {
+      return notFound(res, "Invalid unique code");
+    }
+
+    const jwtToken = jwt.sign(
+      {
+        email: organisator.email,
+        role: "organisator",
+        ticket: "unique-code",
+      },
+      ENV.APP_JWT_SECRET,
+      {
+        expiresIn: "15m",
+      }
+    );
+    const jwtRefreshToken = jwt.sign(
+      {
+        email: organisator.email,
+        ticket: "unique-code",
+      },
+      ENV.APP_JWT_REFRESH_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    // set cookie
+    res.cookie("jwt", jwtToken, {
+      httpOnly: true,
+      secure: ENV.NODE_ENV === "production",
+      sameSite: "none",
+      expires: new Date(Date.now() + 15 * 60 * 1000),
+    });
+
+    res.cookie("jwt_refresh", jwtRefreshToken, {
+      httpOnly: true,
+      secure: ENV.NODE_ENV === "production",
+      sameSite: "none",
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+
+    return success(res, "Logged in successfully", {
+      role: "organisator",
+      email: organisator.email,
+    });
+  } catch (err) {
+    logging("ERROR", "Error trying to login organisator via unique code", err);
     return internalServerError(res);
   }
 };

@@ -130,16 +130,20 @@ model Panitia {
 }
 
 model Organisator {
-  id         Int      @id @default(autoincrement())
+  id         Int     @id @default(autoincrement())
   name       String
-  nim        String   @unique
-  email      String   @unique
-  state      State    @relation(fields: [stateId], references: [id])
+  nim        String  @unique
+  email      String  @unique
+  state      State   @relation(fields: [stateId], references: [id])
   stateId    Int
-  isVerified Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  Mail       Mail[]
+  isVerified Boolean @default(false)
+
+  // untuk skystar my beloved
+  uniqueCode String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Mail      Mail[]
 }
 
 model Mahasiswa {
