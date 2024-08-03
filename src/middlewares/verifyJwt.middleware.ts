@@ -40,6 +40,7 @@ const verifyJwt = async (req: Request, res: Response, next: NextFunction) => {
         prodi: true,
         whatsapp: true,
         lineId: true,
+        token: true,
       },
     });
     if (mahasiswa) {
