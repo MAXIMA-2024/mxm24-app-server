@@ -444,12 +444,68 @@ export const logout = (_req: Request, res: Response) => {
 };
 
 export const profile = async (req: Request, res: Response) => {
-  if (!req.user) {
-    return unauthorized(res, "No user found");
+  try {
+    if (!req.user) {
+      return unauthorized(res, "No user found");
+    }
+    const mahasiswa = await db.mahasiswa.findFirst({
+      where: {email: req.user.data.email},
+      select: {
+        name: true,
+        nim: true,
+        email: true,
+        angkatan: true,
+        prodi: true,
+        whatsapp: true,
+        lineId: true,
+        token: true,
+      }
+    })
+    if (!mahasiswa) {
+      return notFound(res, "Data Mahasiswa tidak ditemukan");
+    }
+    return success(res, "Berhasil mendapatkan data mahasiswa", mahasiswa);
+    
+  } catch (err) {
+    logging("ERROR", "Error when trying to fetch mahasiswa data", err);
+    return internalServerError(res);
   }
-
-  return success(res, "User found", req.user);
+  
 };
+
+export const profileUpdate = async (req: Request, res: Response) => {
+  try {
+    if (!req.user) {
+      return unauthorized(res, "No user found");
+    }
+    
+    const validateData = await mahasiswaUpdatableSchema.partial().safeParseAsync(req.body)
+    if (!validateData.success) {
+      return validationError(res, parseZodError(validateData.error));
+    }
+  
+    const isExist = await db.mahasiswa.findFirst({
+      where: {email: req.user.data.email}
+    })
+    if (!isExist) {
+      return notFound(res, "Data Mahasiswa tidak ditemukan");
+    }
+    
+    const mahasiswa = await db.mahasiswa.update({
+      where: {email: req.user.data.email},
+      data: validateData.data,
+    });
+  
+    if (req.user.role === "mahasiswa"){
+      logging("LOGS", `${req.user.data.nim} mengupdate data mahasiswa`, mahasiswa);
+    }
+    return success(res, "Berhasil mengupdate data mahasiswa", mahasiswa);
+  } catch (err) {
+    logging("ERROR", "Error when trying to update mahasiswa data", err);
+    return internalServerError(res);
+  }
+  
+}
 
 type Onboarding =
   | {
