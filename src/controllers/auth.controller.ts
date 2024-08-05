@@ -444,16 +444,11 @@ export const logout = (_req: Request, res: Response) => {
 };
 
 export const profile = async (req: Request, res: Response) => {
-  try {
-    if (!req.user) {
-      return unauthorized(res, "No user found");
-    }
-
-    return success(res, "Berhasil mendapatkan data user", req.user);
-  } catch (err) {
-    logging("ERROR", "Error when trying to fetch mahasiswa data", err);
-    return internalServerError(res);
+  if (!req.user) {
+    return unauthorized(res, "No user found");
   }
+
+  return success(res, "Berhasil mendapatkan data user", req.user);
 };
 
 export const profileUpdate = async (req: Request, res: Response) => {
