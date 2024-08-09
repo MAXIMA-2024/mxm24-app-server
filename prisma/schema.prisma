@@ -52,7 +52,7 @@ model StateRegistration {
   id          Int       @id @default(autoincrement())
   state       State     @relation(fields: [stateId], references: [id])
   stateId     Int
-  mahasiswa   Mahasiswa @relation(fields: [mahasiswaId], references: [id])
+  mahasiswa   Mahasiswa @relation(fields: [mahasiswaId], references: [id], onDelete: Cascade)
   mahasiswaId Int
 
   // absen
@@ -71,7 +71,7 @@ model StateRegistration {
 model MalpunInternal {
   id             Int       @id @default(autoincrement())
   code           String
-  mahasiswa      Mahasiswa @relation(fields: [mahasiswaId], references: [id])
+  mahasiswa      Mahasiswa @relation(fields: [mahasiswaId], references: [id], onDelete: Cascade)
   mahasiswaId    Int
   attendance     Boolean   @default(false)
   attendanceTime DateTime?
@@ -199,22 +199,22 @@ model Mail {
   category MailCategory
 
   // welcome, malpun internal
-  mahasiswa   Mahasiswa? @relation(fields: [mahasiswaId], references: [id])
+  mahasiswa   Mahasiswa? @relation(fields: [mahasiswaId], references: [id], onDelete: Cascade)
   mahasiswaId Int?
 
   // state reminder
-  stateRegistration   StateRegistration? @relation(fields: [stateRegistrationId], references: [id])
+  stateRegistration   StateRegistration? @relation(fields: [stateRegistrationId], references: [id], onDelete: Cascade)
   stateRegistrationId Int?
 
   // malpun external
-  buyer            MalpunExternal? @relation(fields: [malpunExternalId], references: [id])
+  buyer            MalpunExternal? @relation(fields: [malpunExternalId], references: [id], onDelete: Cascade)
   malpunExternalId Int?
 
   // internal
-  panitia   Panitia? @relation(fields: [panitiaId], references: [id])
+  panitia   Panitia? @relation(fields: [panitiaId], references: [id], onDelete: Cascade)
   panitiaId Int?
 
-  organisator   Organisator? @relation(fields: [organisatorId], references: [id])
+  organisator   Organisator? @relation(fields: [organisatorId], references: [id], onDelete: Cascade)
   organisatorId Int?
 
   // status
