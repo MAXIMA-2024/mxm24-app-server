@@ -9,6 +9,7 @@ import {
   parseZodError,
 } from "@/utils/responses";
 import { tokenValidationSchema } from "@/models/accounts/mahasiswa.model";
+import type { Day } from "@prisma/client";
 
 // absen state
 export const absenState = async (req: Request, res: Response) => {
@@ -20,25 +21,33 @@ export const absenState = async (req: Request, res: Response) => {
 
     const token = validateToken.data.token;
 
+    // get the latest day according to now
+    // const day = await db.day.findFirst({
+    //   where: {
+    //     date: start,
+    //   },
+    // });
+
     const now = new Date();
 
-    const start = new Date();
-    // jam 17 di UTC+7
-    start.setUTCHours(10, 0, 0, 0);
+    const dayCandidate = (await db.$queryRaw`
+      SELECT * 
+      FROM Day
+      WHERE DATE_FORMAT(date, '%m') = ${now.getMonth() + 1}
+      AND DATE_FORMAT(date, '%d') = ${now.getDate()}
+      LIMIT 1
+    `) as Day[];
 
-    const end = new Date();
-    // jam 24 di UTC+7
-    end.setUTCHours(16, 59, 59, 999);
-
-    // get the latest day according to now
-    const day = await db.day.findFirst({
-      where: {
-        date: start,
-      },
-    });
-
-    if (!day || now < start || now > end) {
+    if (!dayCandidate.length) {
       return notFound(res, `Tidak ada STATE yang sedang berlangsung sekarang`);
+    }
+
+    const day = dayCandidate[0];
+    // check if time already passed
+    const dbDate = new Date(day.date);
+
+    if (now < dbDate) {
+      return notFound(res, `STATE pada ${day.code} belum dimulai`);
     }
 
     const stateReg = await db.stateRegistration.findFirst({
@@ -135,23 +144,24 @@ export const absenStateDetail = async (req: Request, res: Response) => {
 
     const now = new Date();
 
-    const start = new Date();
-    // jam 17 di UTC+7
-    start.setUTCHours(10, 0, 0, 0);
+    const dayCandidate = (await db.$queryRaw`
+      SELECT * 
+      FROM Day
+      WHERE DATE_FORMAT(date, '%m') = ${now.getMonth() + 1}
+      AND DATE_FORMAT(date, '%d') = ${now.getDate()}
+      LIMIT 1
+    `) as Day[];
 
-    const end = new Date();
-    // jam 24 di UTC+7
-    end.setUTCHours(16, 59, 59, 999);
-
-    // get the latest day according to now
-    const day = await db.day.findFirst({
-      where: {
-        date: start,
-      },
-    });
-
-    if (!day || now < start || now > end) {
+    if (!dayCandidate.length) {
       return notFound(res, `Tidak ada STATE yang sedang berlangsung sekarang`);
+    }
+
+    const day = dayCandidate[0];
+    // check if time already passed
+    const dbDate = new Date(day.date);
+
+    if (now < dbDate) {
+      return notFound(res, `STATE pada ${day.code} belum dimulai`);
     }
 
     const stateReg = await db.stateRegistration.findFirst({
