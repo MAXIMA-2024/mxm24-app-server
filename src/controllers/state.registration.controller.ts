@@ -36,12 +36,12 @@ export const getStateRegistration = async (req: Request, res: Response) => {
       },
     });
     if (!stateRegistration) {
-      return notFound(res, "Mahasiswa not found");
+      return notFound(res, "Mahasiswa tidak ditemukan");
     }
 
     return success(
       res,
-      "Successfully fetched state registration data",
+      "Berhasil mengambil data STATE Registration",
       stateRegistration
     );
   } catch (err) {
@@ -68,7 +68,7 @@ export const addStateRegistration = async (req: Request, res: Response) => {
       },
     });
     if (!mahasiswa) {
-      return notFound(res, "Mahasiswa not found");
+      return notFound(res, "Data Mahasiswa tidak ditemukan");
     }
 
     // Selected State Data
@@ -83,17 +83,17 @@ export const addStateRegistration = async (req: Request, res: Response) => {
       },
     });
     if (!selectedState) {
-      return notFound(res, "State not found");
+      return notFound(res, "STATE tidak ditemukan");
     }
 
     // Max State Mahasiswa
     if (mahasiswa._count.StateRegistration >= 3) {
-      return conflict(res, "Mahasiswa sudah mendaftar 3 state");
+      return conflict(res, "Kamu telah mendaftar di 3 STATE");
     }
 
     // Check Remaining Quota
     if (selectedState._count.StateRegistration >= selectedState.quota) {
-      return conflict(res, "State sudah penuh");
+      return conflict(res, "STATE sudah penuh");
     }
     // Check day ID
     const validateDayID = mahasiswa.StateRegistration.some(
@@ -102,7 +102,7 @@ export const addStateRegistration = async (req: Request, res: Response) => {
     if (validateDayID) {
       return conflict(
         res,
-        "Mahasiswa sudah mendaftar state pada hari yang sama"
+        "Kamu telah mendaftar di STATE pada hari yang sama"
       );
     }
 
@@ -116,16 +116,16 @@ export const addStateRegistration = async (req: Request, res: Response) => {
 
     logging(
       "LOGS",
-      `${mahasiswa.nim} menambahkan state ${selectedState.name}`,
+      `${mahasiswa.nim} menambahkan STATE ${selectedState.name}`,
       stateRegistration
     );
     return success(
       res,
-      "Berhasil menambahkan State Mahasiswa",
+      "Berhasil menambahkan STATE yang dipilih",
       stateRegistration
     );
   } catch (err) {
-    logging("ERROR", "Error when trying to fetch state registration data", err);
+    logging("ERROR", "Error when trying to fetch STATE registration data", err);
     return internalServerError(res);
   }
 };
@@ -140,7 +140,7 @@ export const deleteStateRegistration = async (req: Request, res: Response) => {
       where: { email: req.user?.data.email },
     });
     if (!mahasiswa) {
-      return notFound(res, "Mahasiswa not found");
+      return notFound(res, "Mahasiswa tidak ditemukan");
     }
     const isExists = await db.stateRegistration.findFirst({
       where: {
@@ -149,7 +149,7 @@ export const deleteStateRegistration = async (req: Request, res: Response) => {
       },
     });
     if (!isExists) {
-      return notFound(res, "State Registration data not found");
+      return notFound(res, "Data STATE Registration tidak ditemukan");
     }
     const deleteStateRegistration = await db.stateRegistration.delete({
       where: {
@@ -158,12 +158,12 @@ export const deleteStateRegistration = async (req: Request, res: Response) => {
     });
     logging(
       "LOGS",
-      `${mahasiswa.nim} menghapus state registration stateId: ${isExists.stateId}`,
+      `${mahasiswa.nim} menghapus STATE registration, stateId: ${isExists.stateId}`,
       deleteStateRegistration
     );
     return success(
       res,
-      "Berhasil menghapus state registration",
+      "Berhasil menghapus data STATE registration",
       deleteStateRegistration
     );
   } catch (err) {
