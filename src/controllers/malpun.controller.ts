@@ -14,6 +14,7 @@ import {
   success,
   badRequest,
   forbidden,
+  conflict,
 } from "@/utils/responses";
 
 import { nanoid } from "nanoid"; //generate random id
@@ -96,6 +97,18 @@ export const addAccountExternal = async (req: Request, res: Response) => {
         res,
         "terjadi kesalahan pada midtrans harap coba kembali"
       );
+    }
+
+    if (validate.data.alfagiftId) {
+      const duplicate = await db.malpunExternal.findFirst({
+        where: {
+          alfagiftId: validate.data.alfagiftId,
+        },
+      });
+
+      if (duplicate) {
+        return conflict(res, "Kode Alfagift sudah digunakan");
+      }
     }
 
     const account = await db.malpunExternal.create({

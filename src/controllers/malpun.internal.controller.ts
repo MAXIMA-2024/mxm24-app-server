@@ -46,6 +46,18 @@ export const addTicketInternal = async (req: Request, res: Response) => {
     if (ticket) {
       return conflict(res, "Ticket sudah di claim");
     }
+
+    // check for alfagiftId dupe
+    const duplicate = await db.malpunInternal.findFirst({
+      where: {
+        alfagiftId: validate.data.alfagiftId,
+      },
+    });
+
+    if (duplicate) {
+      return conflict(res, "Kode Alfagift sudah digunakan");
+    }
+
     const newTicket = await db.malpunInternal.create({
       data: {
         code: `MXM24-${nanoid(16)}`,
