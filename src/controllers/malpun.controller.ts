@@ -54,6 +54,19 @@ export const addAccountExternal = async (req: Request, res: Response) => {
 
     const token = `MXM24-${nanoid(16)}`;
 
+    // check for chattime eligible
+    const isChatTimeEligible =
+      (await db.malpunExternal.count({
+        where: {
+          validatedAt: {
+            not: null,
+          },
+          transactionId: {
+            not: null,
+          },
+        },
+      })) <= 200;
+
     const resp = await fetch(API_URL, {
       method: "POST",
       headers: {
@@ -63,8 +76,11 @@ export const addAccountExternal = async (req: Request, res: Response) => {
       body: JSON.stringify({
         transaction_details: {
           order_id: token,
-          gross_amount: 35000,
+
+          // ganti harga chattime eligible disini
+          gross_amount: isChatTimeEligible ? 40000 : 35000,
         },
+
         credit_card: {
           secure: true,
         },
@@ -87,6 +103,7 @@ export const addAccountExternal = async (req: Request, res: Response) => {
         fullName: validate.data.fullName,
         email: validate.data.email,
         code: token,
+        alfagiftId: validate.data.alfagiftId,
       },
     });
 
@@ -138,11 +155,24 @@ export const midtransCallback = async (req: Request, res: Response) => {
     }
 
     if (mtData.transaction_status == "settlement") {
+      const isChatimeEligible =
+        (await db.malpunExternal.count({
+          where: {
+            validatedAt: {
+              not: null,
+            },
+            transactionId: {
+              not: null,
+            },
+          },
+        })) <= 200;
+
       const updatedAccount = await db.malpunExternal.update({
         where: { id: account.id },
         data: {
           transactionId: validate.data.transaction_id,
           validatedAt: new Date(validate.data.transaction_time),
+          isChatimeEligible,
         },
       });
 

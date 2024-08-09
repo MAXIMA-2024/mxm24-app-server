@@ -94,6 +94,10 @@ model MalpunExternal {
   attendance     Boolean   @default(false)
   attendanceTime DateTime?
 
+  // additional data
+  alfagiftId        String?
+  isChatimeEligible Boolean @default(false)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Mail      Mail[]
