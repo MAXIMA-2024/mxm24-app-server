@@ -2,6 +2,10 @@ import { z } from "zod";
 import { daySchema } from "@/models/state/day.model";
 import { idSchema } from "@/models/id.model";
 
+const maxWords = (max: number) => (value: string) => {
+  return value.trim().split(/\s+/).length <= max;
+};
+
 export const stateSchema = z.object({
   id: idSchema,
   name: z.string({ required_error: "Name cannot be empty" }),
@@ -11,7 +15,9 @@ export const stateSchema = z.object({
   gallery: z.array(idSchema).optional(), // can be empty at first
   description: z
     .string({ required_error: "Description cannot be empty" })
-    .max(500, "Description must be under 500 characters"),
+    .refine(maxWords(150), {
+      message: "Must have 150 words or fewer",
+    }),
   location: z.string({ required_error: "Location cannot be empty" }),
   quota: z
     .number({ required_error: "Quota cannot be empty" })

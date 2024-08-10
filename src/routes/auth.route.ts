@@ -5,11 +5,13 @@ import {
   refresh,
   logout,
   profile,
+  profileUpdate,
   onboarding,
   organisatorLoginCode,
 } from "@/controllers/auth.controller";
 
 import verifyJwt from "@/middlewares/verifyJwt.middleware";
+import verifyRole from "@/middlewares/verifyRole.middleware";
 
 const router = Router();
 
@@ -22,6 +24,7 @@ router.delete("/logout", logout);
 
 // self profile
 router.get("/profile", verifyJwt, profile);
+router.put("/profile", verifyJwt, verifyRole(["mahasiswa"]), profileUpdate);
 
 // onboarding
 router.post("/onboarding", verifyJwt, onboarding);

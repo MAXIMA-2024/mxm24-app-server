@@ -1,6 +1,7 @@
 import { Faker, id_ID, fakerID_ID } from "@faker-js/faker";
 import { type MahasiswaUpdatable } from "@/models/accounts/mahasiswa.model";
 import db from "@/services/db";
+import { nanoid } from "nanoid";
 
 const faker = new Faker({
   locale: [id_ID],
@@ -57,10 +58,27 @@ await Promise.all(
         return {
           mahasiswaId: mahasiswa.id,
           stateId: stateId[Math.floor(Math.random() * stateId.length)].id,
-          firstAttendance: genRandomBool(),
-          lastAttendance: genRandomBool(),
+          firstAttendance: false,
+          lastAttendance: false,
         };
       }),
+    });
+  })
+);
+
+// malpun generator
+await Promise.all(
+  mahasiswas.map(async (mahasiswa) => {
+    await db.malpunInternal.create({
+      data: {
+        mahasiswa: {
+          connect: {
+            id: mahasiswa.id,
+          },
+        },
+        code: "MXM24-" + nanoid(16),
+        alfagiftId: "99900" + nanoid(11),
+      },
     });
   })
 );

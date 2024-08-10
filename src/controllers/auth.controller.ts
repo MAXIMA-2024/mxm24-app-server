@@ -448,7 +448,46 @@ export const profile = async (req: Request, res: Response) => {
     return unauthorized(res, "No user found");
   }
 
-  return success(res, "User found", req.user);
+  return success(res, "Berhasil mendapatkan data user", req.user);
+};
+
+export const profileUpdate = async (req: Request, res: Response) => {
+  try {
+    if (!req.user) {
+      return unauthorized(res, "No user found");
+    }
+
+    const validateData = await mahasiswaUpdatableSchema
+      .partial()
+      .safeParseAsync(req.body);
+    if (!validateData.success) {
+      return validationError(res, parseZodError(validateData.error));
+    }
+
+    const isExist = await db.mahasiswa.findFirst({
+      where: { email: req.user.data.email },
+    });
+    if (!isExist) {
+      return notFound(res, "Data Mahasiswa tidak ditemukan");
+    }
+
+    const mahasiswa = await db.mahasiswa.update({
+      where: { email: req.user.data.email },
+      data: validateData.data,
+    });
+
+    if (req.user.role === "mahasiswa") {
+      logging(
+        "LOGS",
+        `${req.user.data.nim} mengupdate data mahasiswa`,
+        mahasiswa
+      );
+    }
+    return success(res, "Berhasil mengupdate data mahasiswa", mahasiswa);
+  } catch (err) {
+    logging("ERROR", "Error when trying to update mahasiswa data", err);
+    return internalServerError(res);
+  }
 };
 
 type Onboarding =
