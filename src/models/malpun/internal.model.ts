@@ -2,7 +2,7 @@ import { z } from "zod";
 import { idSchema } from "../id.model";
 
 export const validateAlfagiftId = (code: string) =>
-  code.startsWith("999001") || code.startsWith("999999");
+  code.startsWith("999001") || code.startsWith("999999") || code.startsWith("99902000") || code.startsWith("999003") || code.startsWith("999004");
 
 export const internalSchema = z.object({
   id: idSchema,
@@ -16,7 +16,7 @@ export const internalSchema = z.object({
   alfagiftId: z
     .string()
     .length(16, "Invalid Alfagift ID length")
-    .refine(validateAlfagiftId, (_val) => ({ message: "Invalid Alfagift ID" })),
+    .refine(validateAlfagiftId, "Invalid Alfagift ID"),
 
   createdAt: z.date(),
   updatedAt: z.date(),

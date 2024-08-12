@@ -15,7 +15,7 @@ export const externalSchema = z.object({
   alfagiftId: z
     .string()
     .length(16, "Invalid Alfagift ID length")
-    .refine(validateAlfagiftId, (_val) => ({ message: "Invalid Alfagift ID" }))
+    .refine(validateAlfagiftId, "Invalid Alfagift ID")
     .optional(),
 
   validatedAt: z.date(),
