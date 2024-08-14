@@ -95,8 +95,8 @@ model MalpunExternal {
   attendanceTime DateTime?
 
   // additional data
-  alfagiftId        String?
-  isChatimeEligible Boolean @default(false)
+  alfagiftId      String?
+  isChatimeBundle Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

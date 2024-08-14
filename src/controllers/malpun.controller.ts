@@ -34,6 +34,32 @@ const API_URL =
     ? "https://app.sandbox.midtrans.com/snap/v1/transactions"
     : "https://app.midtrans.com/snap/v1/transactions";
 
+export const checkForChatimeEligibility = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const isChatTimeEligible =
+      (await db.malpunExternal.count({
+        where: {
+          validatedAt: {
+            not: null,
+          },
+          transactionId: {
+            not: null,
+          },
+        },
+      })) <= 200;
+
+    return success(res, "Berhasil mendapatkan Chatime eligibility", {
+      isChatTimeEligible,
+    });
+  } catch (err) {
+    logging("ERROR", "Error when trying to check for Chatime eligibility", err);
+    return internalServerError(res);
+  }
+};
+
 //POST Method
 //menambah account untuk pendaftaran malpun external
 export const addAccountExternal = async (req: Request, res: Response) => {
@@ -68,6 +94,11 @@ export const addAccountExternal = async (req: Request, res: Response) => {
         },
       })) <= 200;
 
+    // check buat eligibility
+    if (validate.data.isChatimeBundle && !isChatTimeEligible) {
+      return badRequest(res, "Maaf MAXIMERS, kuota Chatime sudah habis.");
+    }
+
     const resp = await fetch(API_URL, {
       method: "POST",
       headers: {
@@ -79,7 +110,7 @@ export const addAccountExternal = async (req: Request, res: Response) => {
           order_id: token,
 
           // ganti harga chattime eligible disini
-          gross_amount: isChatTimeEligible ? 40000 : 35000,
+          gross_amount: validate.data.isChatimeBundle ? 55000 : 50000,
         },
 
         credit_card: {
@@ -117,6 +148,7 @@ export const addAccountExternal = async (req: Request, res: Response) => {
         email: validate.data.email,
         code: token,
         alfagiftId: validate.data.alfagiftId,
+        isChatimeBundle: validate.data.isChatimeBundle,
       },
     });
 
@@ -164,28 +196,15 @@ export const midtransCallback = async (req: Request, res: Response) => {
       where: { code: validate.data.order_id },
     });
     if (!account) {
-      return notFound(res, "order not found");
+      return notFound(res, "Order not found");
     }
 
     if (mtData.transaction_status == "settlement") {
-      const isChatimeEligible =
-        (await db.malpunExternal.count({
-          where: {
-            validatedAt: {
-              not: null,
-            },
-            transactionId: {
-              not: null,
-            },
-          },
-        })) <= 200;
-
       const updatedAccount = await db.malpunExternal.update({
         where: { id: account.id },
         data: {
           transactionId: validate.data.transaction_id,
           validatedAt: new Date(validate.data.transaction_time),
-          isChatimeEligible,
         },
       });
 

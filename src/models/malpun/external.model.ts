@@ -18,6 +18,10 @@ export const externalSchema = z.object({
     .refine(validateAlfagiftId, "Invalid Alfagift ID")
     .optional(),
 
+  isChatimeBundle: z
+    .boolean({ required_error: "Chatime eligibility can't be empty" })
+    .default(false),
+
   validatedAt: z.date(),
   attendance: z.boolean(),
   attendanceTime: z.date(),
@@ -31,6 +35,7 @@ export const externalUpdatableSchema = externalSchema.pick({
   email: true,
   turnstileToken: true,
   alfagiftId: true,
+  isChatimeBundle: true,
 });
 
 export const midtransCallbackSchema = z.object({
