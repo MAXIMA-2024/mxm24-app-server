@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { idSchema } from "../id.model";
+import { validateAlfagiftId } from "./internal.model";
 
 export const externalSchema = z.object({
   id: idSchema,
@@ -9,6 +10,18 @@ export const externalSchema = z.object({
     .string({ required_error: "Email can't be empty" })
     .email("Please enter a valid email address"),
   transactionId: z.string(),
+
+  // additional data
+  alfagiftId: z
+    .string()
+    .length(16, "Invalid Alfagift ID length")
+    .refine(validateAlfagiftId, "Invalid Alfagift ID")
+    .optional(),
+
+  isChatimeBundle: z
+    .boolean({ required_error: "Chatime eligibility can't be empty" })
+    .default(false),
+
   validatedAt: z.date(),
   attendance: z.boolean(),
   attendanceTime: z.date(),
@@ -21,6 +34,8 @@ export const externalUpdatableSchema = externalSchema.pick({
   fullName: true,
   email: true,
   turnstileToken: true,
+  alfagiftId: true,
+  isChatimeBundle: true,
 });
 
 export const midtransCallbackSchema = z.object({
