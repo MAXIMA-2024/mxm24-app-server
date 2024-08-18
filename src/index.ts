@@ -29,6 +29,7 @@ const app = Express();
 const allowedOrigins = [
   "https://internal.maximaumn.id",
   "https://maximaumn.id",
+  "https://www.maximaumn.id",
   "https://maxima.umn.ac.id",
   "https://orion.maximaumn.id", // internal
   "https://sirius.maximaumn.id", // client
