@@ -14,6 +14,7 @@ import {
   success,
   badRequest,
   forbidden,
+  conflict,
 } from "@/utils/responses";
 
 import { nanoid } from "nanoid"; //generate random id
@@ -32,6 +33,32 @@ const API_URL =
   ENV.MIDTRANS_ENV == "sandbox"
     ? "https://app.sandbox.midtrans.com/snap/v1/transactions"
     : "https://app.midtrans.com/snap/v1/transactions";
+
+export const checkForChatimeEligibility = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const isChatTimeEligible =
+      (await db.malpunExternal.count({
+        where: {
+          validatedAt: {
+            not: null,
+          },
+          transactionId: {
+            not: null,
+          },
+        },
+      })) <= 200;
+
+    return success(res, "Berhasil mendapatkan Chatime eligibility", {
+      isChatTimeEligible,
+    });
+  } catch (err) {
+    logging("ERROR", "Error when trying to check for Chatime eligibility", err);
+    return internalServerError(res);
+  }
+};
 
 //POST Method
 //menambah account untuk pendaftaran malpun external
@@ -54,6 +81,24 @@ export const addAccountExternal = async (req: Request, res: Response) => {
 
     const token = `MXM24-${nanoid(16)}`;
 
+    // check for chattime eligible
+    const isChatTimeEligible =
+      (await db.malpunExternal.count({
+        where: {
+          validatedAt: {
+            not: null,
+          },
+          transactionId: {
+            not: null,
+          },
+        },
+      })) <= 200;
+
+    // check buat eligibility
+    if (validate.data.isChatimeBundle && !isChatTimeEligible) {
+      return badRequest(res, "Maaf MAXIMERS, kuota Chatime sudah habis.");
+    }
+
     const resp = await fetch(API_URL, {
       method: "POST",
       headers: {
@@ -63,8 +108,11 @@ export const addAccountExternal = async (req: Request, res: Response) => {
       body: JSON.stringify({
         transaction_details: {
           order_id: token,
-          gross_amount: 35000,
+
+          // ganti harga chattime eligible disini
+          gross_amount: validate.data.isChatimeBundle ? 55000 : 50000,
         },
+
         credit_card: {
           secure: true,
         },
@@ -82,11 +130,25 @@ export const addAccountExternal = async (req: Request, res: Response) => {
       );
     }
 
+    if (validate.data.alfagiftId) {
+      const duplicate = await db.malpunExternal.findFirst({
+        where: {
+          alfagiftId: validate.data.alfagiftId,
+        },
+      });
+
+      if (duplicate) {
+        return conflict(res, "Kode Alfagift sudah digunakan");
+      }
+    }
+
     const account = await db.malpunExternal.create({
       data: {
         fullName: validate.data.fullName,
         email: validate.data.email,
         code: token,
+        alfagiftId: validate.data.alfagiftId,
+        isChatimeBundle: validate.data.isChatimeBundle,
       },
     });
 
@@ -134,7 +196,7 @@ export const midtransCallback = async (req: Request, res: Response) => {
       where: { code: validate.data.order_id },
     });
     if (!account) {
-      return notFound(res, "order not found");
+      return notFound(res, "Order not found");
     }
 
     if (mtData.transaction_status == "settlement") {

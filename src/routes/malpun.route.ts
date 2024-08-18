@@ -4,6 +4,7 @@ import verifyRole from "@/middlewares/verifyRole.middleware";
 import verifyDivisiPanitia from "@/middlewares/verifyDivisiPanitia.middleware";
 import {
   absenMalpun,
+  checkForChatimeEligibility,
   ticketMalpunDetail,
 } from "@/controllers/malpun.controller";
 import {
@@ -50,7 +51,8 @@ router.get(
 );
 
 // Route External
-router.post("/external", addAccountExternal); //route malpun external
-router.post("/external/callback", midtransCallback); //route malpun external
+router.post("/external", addAccountExternal);
+router.get("/external/checkChatime", checkForChatimeEligibility);
+router.post("/external/callback", midtransCallback);
 
 export default router;
