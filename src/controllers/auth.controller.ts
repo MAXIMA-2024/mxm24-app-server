@@ -102,6 +102,7 @@ export const ssoCallback = async (
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         sameSite: "none",
+        partitioned: true,
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -109,6 +110,7 @@ export const ssoCallback = async (
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         sameSite: "none",
+        partitioned: true,
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
 
@@ -151,6 +153,7 @@ export const ssoCallback = async (
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         sameSite: "none",
+        partitioned: true,
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -158,6 +161,7 @@ export const ssoCallback = async (
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         sameSite: "none",
+        partitioned: true,
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
 
@@ -200,6 +204,7 @@ export const ssoCallback = async (
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         sameSite: "none",
+        partitioned: true,
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -207,6 +212,7 @@ export const ssoCallback = async (
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         sameSite: "none",
+        partitioned: true,
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
 
@@ -244,6 +250,7 @@ export const ssoCallback = async (
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       sameSite: "none",
+      partitioned: true,
       expires: new Date(Date.now() + 15 * 60 * 1000),
     });
 
@@ -251,6 +258,7 @@ export const ssoCallback = async (
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       sameSite: "none",
+      partitioned: true,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
@@ -276,11 +284,13 @@ export const refresh = async (req: Request, res: Response) => {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         sameSite: "none",
+        partitioned: true,
       });
       res.clearCookie("jwt_refresh", {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         sameSite: "none",
+        partitioned: true,
       });
       return unauthorized(res, "No refresh token found. Please login again");
     }
@@ -317,6 +327,7 @@ export const refresh = async (req: Request, res: Response) => {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         sameSite: "none",
+        partitioned: true,
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -349,6 +360,7 @@ export const refresh = async (req: Request, res: Response) => {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         sameSite: "none",
+        partitioned: true,
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -381,6 +393,7 @@ export const refresh = async (req: Request, res: Response) => {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         sameSite: "none",
+        partitioned: true,
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -407,6 +420,7 @@ export const refresh = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       sameSite: "none",
+      partitioned: true,
       expires: new Date(Date.now() + 15 * 60 * 1000),
     });
 
@@ -419,11 +433,13 @@ export const refresh = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       sameSite: "none",
+      partitioned: true,
     });
     res.clearCookie("jwt_refresh", {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       sameSite: "none",
+      partitioned: true,
     });
     return unauthorized(res, "Invalid refresh token, try login again");
   }
@@ -434,11 +450,13 @@ export const logout = (_req: Request, res: Response) => {
     httpOnly: true,
     secure: ENV.NODE_ENV === "production",
     sameSite: "none",
+    partitioned: true,
   });
   res.clearCookie("jwt_refresh", {
     httpOnly: true,
     secure: ENV.NODE_ENV === "production",
     sameSite: "none",
+    partitioned: true,
   });
   return success(res, "Logged out successfully");
 };
@@ -568,6 +586,7 @@ export const onboarding = async (
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         sameSite: "none",
+        partitioned: true,
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -636,6 +655,7 @@ export const onboarding = async (
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         sameSite: "none",
+        partitioned: true,
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -701,6 +721,7 @@ export const onboarding = async (
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         sameSite: "none",
+        partitioned: true,
         expires: new Date(Date.now() + 15 * 60 * 1000),
       });
 
@@ -768,6 +789,7 @@ export const organisatorLoginCode = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       sameSite: "none",
+      partitioned: true,
       expires: new Date(Date.now() + 15 * 60 * 1000),
     });
 
@@ -775,6 +797,7 @@ export const organisatorLoginCode = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       sameSite: "none",
+      partitioned: true,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
