@@ -34,7 +34,7 @@ const mahasiswaSchema = z.object({
   // personal
   whatsapp: z
     .string({ required_error: "WhatsApp number cannot be empty" })
-    .regex(/^(\+62|62|0)8[1-9][0-9]{6,9}$/, "Invalid WhatsApp number"),
+    .regex(/^(\+62|62|0)8[1-9][0-9]{6,10}$/, "Invalid WhatsApp number"),
   lineId: z.string({ required_error: "Line ID cannot be empty" }),
   token: z
     .string({ required_error: "Token cannot be empty" })
