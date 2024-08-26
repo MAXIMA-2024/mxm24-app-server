@@ -110,7 +110,7 @@ export const addAccountExternal = async (req: Request, res: Response) => {
           order_id: token,
 
           // ganti harga chattime eligible disini
-          gross_amount: validate.data.isChatimeBundle ? 55000 : 50000,
+          gross_amount: 65000,
         },
 
         credit_card: {
