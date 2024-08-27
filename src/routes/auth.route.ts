@@ -8,6 +8,7 @@ import {
   profileUpdate,
   onboarding,
   organisatorLoginCode,
+  preOnboardingMahasiswa,
 } from "@/controllers/auth.controller";
 
 import verifyJwt from "@/middlewares/verifyJwt.middleware";
@@ -25,6 +26,14 @@ router.delete("/logout", logout);
 // self profile
 router.get("/profile", verifyJwt, profile);
 router.put("/profile", verifyJwt, verifyRole(["mahasiswa"]), profileUpdate);
+
+// pre onboarding
+router.get(
+  "/preOnboarding",
+  verifyJwt,
+  verifyRole(["mahasiswa"]),
+  preOnboardingMahasiswa
+);
 
 // onboarding
 router.post("/onboarding", verifyJwt, onboarding);

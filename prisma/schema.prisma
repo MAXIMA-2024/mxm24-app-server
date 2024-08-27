@@ -220,3 +220,13 @@ model Mail {
   // status
   sentAt DateTime?
 }
+
+// [DataMaba]: data dapet dari studev
+model DataMaba {
+  id       Int    @id @default(autoincrement())
+  nim      String @unique
+  name     String
+  prodi    String
+  angkatan Int
+  email    String
+}
