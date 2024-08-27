@@ -31,7 +31,7 @@ router.put("/profile", verifyJwt, verifyRole(["mahasiswa"]), profileUpdate);
 router.get(
   "/preOnboarding",
   verifyJwt,
-  verifyRole(["mahasiswa"]),
+  verifyRole(["unknown"]),
   preOnboardingMahasiswa
 );
 
