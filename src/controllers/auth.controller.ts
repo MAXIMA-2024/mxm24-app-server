@@ -522,6 +522,32 @@ type Onboarding =
       data: MahasiswaUpdatable;
     };
 
+export const preOnboardingMahasiswa = async (req: Request, res: Response) => {
+  try {
+    if (req.user?.role !== "unknown") {
+      return badRequest(res, "User already registered");
+    }
+
+    const email = req.user.data.email;
+
+    const dataMaba = await db.dataMaba.findFirst({
+      where: { email },
+    });
+
+    if (!dataMaba) {
+      return notFound(
+        res,
+        "Maaf, kamu tidak terdaftar sebagai mahasiswa baru 2024. Jika ini merupakan kesalahan, silahkan hubungi panitia melalui @maximaumn dan memberikan bukti yang konkrit."
+      );
+    }
+
+    return success(res, "Berhasil mendapatkan data mahasiswa", dataMaba);
+  } catch (err) {
+    logging("ERROR", "Error while trying to pre-onboard user", err);
+    return internalServerError(res);
+  }
+};
+
 export const onboarding = async (
   req: Request<{}, {}, Onboarding>,
   res: Response
