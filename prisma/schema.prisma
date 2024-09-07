@@ -98,6 +98,9 @@ model MalpunExternal {
   alfagiftId      String?
   isChatimeBundle Boolean @default(false)
 
+  // invitation
+  isInvited Boolean @default(false)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Mail      Mail[]
@@ -192,6 +195,7 @@ enum MailCategory {
   STATE_REMINDER
   MALPUN_INTERNAL
   MALPUN_EXTERNAL
+  MALPUN_INVITATION
 }
 
 model Mail {
