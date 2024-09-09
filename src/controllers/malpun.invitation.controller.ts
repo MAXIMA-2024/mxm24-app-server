@@ -24,6 +24,13 @@ export const getAllInvitations = async (req: Request, res: Response) => {
       where: {
         isInvited: true,
       },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        code: true,
+        isInvited: true,
+      },
     });
 
     return success(res, "Successfully get all invitations", invitations);
@@ -42,6 +49,13 @@ export const getInvitation = async (req: Request, res: Response) => {
 
     const invitation = await db.malpunExternal.findUnique({
       where: { id: validate.data, isInvited: true },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        code: true,
+        isInvited: true,
+      },
     });
 
     if (!invitation) {
@@ -84,6 +98,7 @@ export const createInvitation = async (req: Request, res: Response) => {
         code,
         transactionId: "INVITATION",
         validatedAt: new Date(),
+        isInvited: true,
       },
     });
 
