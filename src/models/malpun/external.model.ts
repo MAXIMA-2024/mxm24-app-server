@@ -22,6 +22,12 @@ export const externalSchema = z.object({
     .boolean({ required_error: "Chatime eligibility can't be empty" })
     .default(false),
 
+  isInvited: z
+    .boolean({
+      required_error: "Invitation status can't be empty",
+    })
+    .default(false),
+
   validatedAt: z.date(),
   attendance: z.boolean(),
   attendanceTime: z.date(),
@@ -36,6 +42,11 @@ export const externalUpdatableSchema = externalSchema.pick({
   turnstileToken: true,
   alfagiftId: true,
   isChatimeBundle: true,
+});
+
+export const invitationUpdatableSchema = externalSchema.pick({
+  fullName: true,
+  email: true,
 });
 
 export const midtransCallbackSchema = z.object({
